@@ -3,18 +3,15 @@ import struct
 import yaml
 import sqlite3
 import bz2
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from io import StringIO
 import time
 from PIL import Image 
 # simple work-around to support PIL or PILLOW
 if(not hasattr(Image.Image,"tobytes")):
     Image.Image.tobytes = Image.Image.tostring
-import dmd 
-from dmd import Frame
-from sdl2_displaymanager import sdl2_DisplayManager
+from . import dmd
+from .dmd import Frame
+from .sdl2_displaymanager import sdl2_DisplayManager
 from procgame import config
 import logging
 import re
@@ -34,6 +31,7 @@ except ImportError:
 shared_cache_manager = None
 
 warned_cache_disabled = False
+
 
 class AnimationCacheManager(object):
     def __init__(self, path):
@@ -69,7 +67,7 @@ class AnimationCacheManager(object):
         CREATE_ENTRIES_TABLE = '''create table if not exists entries (path text, created integer, accessed integer, compression text, data blob)'''
         self.conn = sqlite3.connect(self.database_path())
         self.conn.execute(CREATE_VERSION_TABLE)
-        
+
         # Now check for any existing version information:
         c = self.conn.cursor()
         c.execute('''select version from version limit 1''')
@@ -81,7 +79,8 @@ class AnimationCacheManager(object):
             if version == DATABASE_VERSION:
                 pass # we are up to date
             else:
-                import pdb; pdb.set_trace()
+                import pdb
+                pdb.set_trace()
                 logging.getLogger('game.dmdcache').warning('DMD cache database version (%d) is not current (%d).  Cache will be rebuilt.', version, DATABASE_VERSION)
                 del self.conn
                 os.remove(self.database_path())
@@ -107,7 +106,7 @@ class AnimationCacheManager(object):
             return None
         else:
             return bz2.decompress(data)
-    
+
     def set_at_path(self, path, data):
         """Save *data* for the given *path* in the cache."""
         self.invalidate_path(path)
@@ -119,24 +118,24 @@ class AnimationCacheManager(object):
 
 class Animation(object):
     """An ordered collection of :class:`~procgame.dmd.Frame` objects."""
-    
+
     width = None
     """Width of each of the animation frames in dots."""
     height = None
     """Height of each of the animation frames in dots."""
     frames = []
     """Ordered collection of :class:`~procgame.dmd.Frame` objects."""
-    
+
     def __init__(self):
         """Initializes the animation."""
         super(Animation, self).__init__()
         self.frames = []
 
-    def load(self, filename, allow_cache=True, composite_op=None):
+    def load(self, filename, allow_cache=True):
         """Loads *filename* from disk.  The native animation format is the
         :ref:`dmd-format`, which can be created using :ref:`tool-dmdconvert`, or
         `DMDAnimator <https://github.com/preble/DMDAnimator>`_.
-        
+
         This method also supports loading common image formats such as PNG, GIF,
         and so forth using
         `Python Imaging Library <http://www.pythonware.com/products/pil/>`_.
@@ -144,11 +143,11 @@ class Animation(object):
         facility is provided.  To enable animation caching, provide a path using the
         ``dmd_cache_path`` key in :ref:`config-yaml`.  Note that only non-native
         images are cached (.dmd files are not cached).
-        
+
         *filename* can be a string or a list.  If it is a list, the images pointed
         to will be appended to the animation.
         """
-        
+
         # Allow the parameter to be a single filename, or a list of filenames.
         paths = list()
         if type(filename) != list:
@@ -215,7 +214,7 @@ class Animation(object):
                 elif ext =='.mp4' or ext == '.avi':
                     self.populate_from_mp4_file(path)
                 else:
-                    # logger.info('Loading %s...', path) # Log for images...
+                    logger.debug('Loading %s...', path) # Log for images...
                     global warned_cache_disabled
                     if not animation_cache and not warned_cache_disabled and allow_cache:
                         logger.warning('Loading image file with caching disabled; set dmd_cache_path in config to enable.')
@@ -233,24 +232,24 @@ class Animation(object):
         
             # Finally store the data in the cache:  
             if animation_cache:
-                #print "Storing in the cache: ", key_path
+                logger.debug("Storing in the cache: ", key_path)
                 animation_cache.set_at_path(key_path, dmd_data)
                     
-            # print('Loaded "%s" from disk in %0.3fs', key_path, time.time()-t0)
+            logger.debug('Loaded "%s" from disk in %0.3fs', key_path, time.time()-t0)
             
         return self
 
     def save(self, filename):
         """Saves the animation as a .dmd file at the given location, `filename`."""
-        if self.width == None or self.height == None:
-            raise ValueError, "width and height must be set on Animation before it can be saved."
+        if self.width is None or self.height is None:
+            raise ValueError("width and height must be set on Animation before it can be saved.")
         with open(filename, 'wb') as f:
             self.save_to_dmd_file(f)
 
     def save_old(self, filename):
         """Saves the animation as a 'traditional' (8bpp) .dmd file at the given location, `filename`."""
         if self.width == None or self.height == None:
-            raise ValueError, "width and height must be set on Animation before it can be saved."
+            raise ValueError("width and height must be set on Animation before it can be saved.")
         with open(filename, 'wb') as f:
             self.save_to_old_dmd_file(f)
 
@@ -304,7 +303,7 @@ class Animation(object):
 
     def populate_from_image_file(self, path, f, composite_op = None):
         if not Image:
-            raise RuntimeError, 'Cannot open non-native image types without Python Imaging Library: %s' % (path)
+            raise RuntimeError('Cannot open non-native image types without Python Imaging Library: %s' % (path))
         
         src = Image.open(f)
 
@@ -312,14 +311,14 @@ class Animation(object):
         # print ("conversion of image, sized " + str(w) + "," + str(h))
 
         if len(self.frames) > 0 and (w != self.width or h != self.height):
-            raise ValueError, "Image sizes must be uniform!  Anim is %dx%d, image is %dx%d" % (w, h, self.width, self.height)
+            raise ValueError("Image sizes must be uniform!  Anim is %dx%d, image is %dx%d" % (w, h, self.width, self.height))
 
         (self.width, self.height) = (w, h)
 
         # I'm punting on animated gifs, because they're too slow.  If you coalesce them 
         # via image magic then they are fast again.
         if path.endswith('.gif'): 
-            import animgif
+            from . import animgif
             self.frames += animgif.gif_frames(src, composite_op = composite_op)
         else:
             (w,h) = src.size
@@ -338,6 +337,7 @@ class Animation(object):
         f.seek(0, os.SEEK_END) # Go to the end of the file to get its length
         file_length = f.tell()
          
+        # TODO: does the following line do anything?
         f.seek(0) # Skip back to the 4 byte DMD header.
         dmd_version = struct.unpack("I", f.read(4))[0]
         dmd_style = 0 # old
@@ -355,11 +355,11 @@ class Animation(object):
             if file_length != 16 + self.width * self.height * frame_count:
                 logging.getLogger('game.dmdcache').warning(f)
                 logging.getLogger('game.dmdcache').warning("expected size = {%d} got {%d}", (16 + self.width * self.height * frame_count), (file_length))
-                raise ValueError, "File size inconsistent with original DMD format header information.  Old or incompatible file format?"
+                raise ValueError("File size inconsistent with original DMD format header information.  Old or incompatible file format?")
         elif(dmd_style==1):
             if file_length != 16 + self.width * self.height * frame_count * 3:
                 logging.getLogger('game.dmdcache').warning(f)
-                raise ValueError, "File size inconsistent with true-color DMD format header information. Old or incompatible file format?"
+                raise ValueError("File size inconsistent with true-color DMD format header information. Old or incompatible file format?")
 
         for frame_index in range(frame_count):
             new_frame = Frame(self.width, self.height)
@@ -376,7 +376,7 @@ class Animation(object):
     def save_to_old_dmd_file(self, f):
         header = struct.pack("IIII", 0x00646D64, len(self.frames), self.width, self.height)
         if len(header) != 16:
-            raise ValueError, "Packed size not 16 bytes as expected: %d" % (len(header))
+            raise ValueError("Packed size not 16 bytes as expected: %d" % (len(header)))
         f.write(header)
         for frame in self.frames:
             str1 = ''.join(str(e) for e in frame.font_dots)
@@ -386,15 +386,17 @@ class Animation(object):
     def save_to_dmd_file(self, f):
         header = struct.pack("IIII", 0x00DEFACE, len(self.frames), self.width, self.height)
         if len(header) != 16:
-            raise ValueError, "Packed size not 16 bytes as expected: %d" % (len(header))
+            raise ValueError("Packed size not 16 bytes as expected: %d" % (len(header)))
         f.write(header)
         for frame in self.frames:
+            # TODO: determine if this is updated; upstream calls this as:
+            # f.write(frame.get_data())
             f.write(frame.get_surface_string())
 
 
     def populate_from_mp4_file(self,file):
         if(cv2 is None):
-            raise ValueError, "MP4 is unavailable as OpenCV is not installed"
+            raise ValueError("MP4 is unavailable as OpenCV is not installed")
         vc = cv2.VideoCapture(file)
         self.width = int(vc.get(cv.CV_CAP_PROP_FRAME_WIDTH))
         self.height = int(vc.get(cv.CV_CAP_PROP_FRAME_HEIGHT))
