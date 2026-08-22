@@ -9,3 +9,6 @@ pyprocgame.egg-info
 *.ttf
 *.ogg
 *.wav
+
+# lint directory
+lint
