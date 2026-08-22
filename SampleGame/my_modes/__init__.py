@@ -1,8 +1,4 @@
-__all__ = [
-    'BaseGameMode',
-    'ExampleBlankMode',
-    'MachineMonitorMode'
-    ]
+__all__ = ["BaseGameMode", "ExampleBlankMode", "MachineMonitorMode"]
 
 from BaseGameMode import *
 from ExampleBlankMode import *
