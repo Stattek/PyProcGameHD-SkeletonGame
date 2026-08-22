@@ -3,13 +3,9 @@
 user_settings.yaml
 dist
 build
-<<<<<<< HEAD
 pyprocgame.egg-info
 *.bak
 *.png
 *.ttf
 *.ogg
 *.wav
-=======
-pyprocgame.egg-info
->>>>>>> upstream/master
