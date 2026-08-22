@@ -157,7 +157,7 @@ class Mode(object):
     def status_str(self):
         return self.__class__.__name__
 
-    def delay(self, name=None, event_type=None, delay=0, handler=None, param=None):
+    def delay(self, name=None, event_type=None, delay=0.0, handler=None, param=None):
         """Schedule the run loop to call the given handler at a later time.
 
         Keyword arguments:
