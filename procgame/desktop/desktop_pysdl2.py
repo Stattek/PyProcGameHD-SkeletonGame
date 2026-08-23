@@ -1,17 +1,9 @@
-import sys
-import procgame
-import pinproc
-from threading import Thread
-import random
-import string
-import time
-import locale
 import math
-import copy
-import ctypes
-from .. import config
 import os
-from time import sleep
+
+import pinproc
+
+from .. import config
 
 try:
     import serial
@@ -21,10 +13,11 @@ except Exception:
 from procgame.events import EventManager
 
 try:
+    import pygame
+    import sdl2.ext
+
     from ..dmd import sdl2_displaymanager
     from ..dmd.sdl2_displaymanager import *
-    import sdl2.ext
-    import pygame
 except ImportError:
     print("PySDL2 is required, but not found.")
     raise
@@ -147,8 +140,8 @@ class Desktop:
             acr = int(math.ceil(self.dots_w / float(32)))
             down = int(math.ceil(self.dots_h / float(32)))
 
-            for step_w in range(0, acr):
-                for step_h in range(0, down):
+            for step_w in range(acr):
+                for step_h in range(down):
                     sdl2_DisplayManager.inst().texture_renderer.copy(
                         dot_sprite, dstrect=(step_w * 320, step_h * 320, 320, 320)
                     )

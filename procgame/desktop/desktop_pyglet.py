@@ -1,11 +1,13 @@
-import procgame.config
-import procgame.dmd
+import colorsys
+
 import pinproc
 import pyglet
 import pyglet.image
 import pyglet.window
 from pyglet import gl
-import colorsys
+
+import procgame.config
+import procgame.dmd
 
 # Bitmap data for luminance-alpha mask image.
 # See image_to_string below for code to generate this:
@@ -16,7 +18,7 @@ DMD_SIZE = (128, 32)
 DMD_SCALE = int(procgame.config.value_for_key_path("desktop_dmd_scale", str(MASK_SIZE)))
 
 
-class Desktop(object):
+class Desktop:
     """The :class:`Desktop` class helps manage interaction with the desktop, providing both a windowed
     representation of the DMD, as well as translating keyboard input into pyprocgame events.
     """
@@ -100,11 +102,11 @@ class Desktop(object):
         return "<Desktop pyglet>"
 
 
-class FrameDrawer(object):
+class FrameDrawer:
     """Manages drawing a DMD frame using pyglet."""
 
     def __init__(self):
-        super(FrameDrawer, self).__init__()
+        super().__init__()
         self.mask = pyglet.image.ImageData(
             MASK_SIZE, MASK_SIZE, "LA", MASK_DATA, pitch=16
         )
@@ -153,8 +155,8 @@ class FrameDrawer(object):
 
     def jk_get_data(self, frame):
         data = ""
-        for y in range(0, 32):
-            for x in range(0, 128):
+        for y in range(32):
+            for x in range(128):
                 dot = frame.get_dot(x, y)
                 r, g, b = self.eight_to_RGB_map[dot]
 
@@ -165,7 +167,7 @@ class FrameDrawer(object):
 
         my_map = [(0, 0, 0)] * 256
 
-        for shad in range(0, 16):
+        for shad in range(16):
             red_on = 1  # defines the shade
             grn_on = 1  # for the default
             blu_on = 0  # dmd coloring
@@ -181,9 +183,9 @@ class FrameDrawer(object):
             my_map[dot] = color
 
         idx = 16
-        for r in range(0, 6):
-            for g in range(0, 8):
-                for b in range(0, 5):
+        for r in range(6):
+            for g in range(8):
+                for b in range(5):
                     color = (int(255 / 5 * r), int(255 / 7 * g), int(255 / 4 * b))
                     if idx <= 255:
                         my_map[idx] = color
@@ -198,7 +200,7 @@ class FrameDrawer(object):
         # build the first 16 shades, these are the default
         # "non-colored" shades (e.g., the defaults).  I make
         # them orange, because I like an orange DMD.
-        for shad in range(0, 16):
+        for shad in range(16):
             red_on = 1  # defines the shade
             grn_on = 1  # for the default
             blu_on = 0  # dmd coloring
@@ -244,8 +246,8 @@ class FrameDrawer(object):
         # for each of the 16 hue/sat pairs, add 8 colors of that pair with
         # increasing lightness.
         idx = 128
-        for deg in range(0, 16):
-            for lum in range(0, 8):
+        for deg in range(16):
+            for lum in range(8):
                 r, g, b = colorsys.hls_to_rgb(
                     hues[deg] / 255.0, (lum + 1) / 9.0, sats[deg] / 255.0
                 )

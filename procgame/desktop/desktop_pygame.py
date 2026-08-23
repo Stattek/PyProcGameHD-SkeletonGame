@@ -1,19 +1,12 @@
-import sys
-from typing import Any
-import procgame
-import pinproc
-from threading import Thread
-import random
-import string
-import time
-import locale
 import math
-import copy
-import ctypes
-from .. import config
 import os
+from typing import Any
+
+import pinproc
 
 from procgame.events import EventManager
+
+from .. import config
 
 try:
     import pygame
@@ -88,8 +81,8 @@ class Desktop:
                 acr = int(math.ceil(self.dots_w / float(32)))
                 down = int(math.ceil(self.dots_h / float(32)))
 
-                for step_w in range(0, acr):
-                    for step_h in range(0, down):
+                for step_w in range(acr):
+                    for step_h in range(down):
                         self.grid_image.blit(
                             grid_32x32segment, (step_w * 320, step_h * 320)
                         )
