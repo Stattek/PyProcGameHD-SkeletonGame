@@ -9,36 +9,36 @@
 
 # This code is released under the MIT License.
 
-#The MIT License (MIT)
+# The MIT License (MIT)
 
-#Copyright (c) 2013 Brian Madden
+# Copyright (c) 2013 Brian Madden
 
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 
-#The above copyright notice and this permission notice shall be included in
-#all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 import logging
-import yaml
-import weakref
 import time
-import uuid
+import weakref
+
+import yaml
 
 
-class LEDshow(object):
+class LEDshow:
     """Represents a LEDshow which is a sequential list of LEDs, colors, and
     timings that can be played back. Individual shows can be started, stopped,
     reset, etc. Shows can be played at any speed, sped up, slowed down, etc.
@@ -57,7 +57,7 @@ class LEDshow(object):
     """
 
     def __init__(self, game, filename=None, actions=None):
-        super(LEDshow, self).__init__()
+        super().__init__()
         self.logger = logging.getLogger("LEDshow")
         self.game = game
         self.active_LEDs = {}  # current active LEDs (and fades) for this show
@@ -94,14 +94,16 @@ class LEDshow(object):
         elif actions:
             self._process(actions)
         else:
-            self.logger.warning("Couldn't set up LEDshow as we didn't receive "
-                                "a LEDshow file or action list as input!")
+            self.logger.warning(
+                "Couldn't set up LEDshow as we didn't receive "
+                + "a LEDshow file or action list as input!"
+            )
 
     def _load(self, filename):
         # Loads a LEDshow yaml file from disk
         self.logger.info("Loading LED show: %s", filename)
         try:
-            LEDshow_actions = yaml.load(open(filename, 'r'))
+            LEDshow_actions = yaml.load(open(filename, "r"))
         except:
             self.logger.error("Error loading LED show: %s", filename)
         else:
@@ -128,9 +130,17 @@ class LEDshow(object):
         if not self.game.LEDs.initialized:
             self.game.LEDs._initialize()
 
-    def play(self, repeat=False, priority=0, blend=False, hold=False,
-             tocks_per_sec=32, start_location=-1, callback=None,
-             num_repeats=0):
+    def play(
+        self,
+        repeat=False,
+        priority=0,
+        blend=False,
+        hold=False,
+        tocks_per_sec=32,
+        start_location=-1,
+        callback=None,
+        num_repeats=0,
+    ):
         """Plays a LEDshow. There are many parameters you can use here which
         affect how the show is played. This includes things like the playback
         speed, priority, whether this show blends with others, etc. These are
@@ -215,7 +225,7 @@ class LEDshow(object):
         self.blend = blend
         self.hold = hold
         self.tocks_per_sec = tocks_per_sec  # also referred to as 'tps'
-        self.secs_per_tock = 1/float(tocks_per_sec)
+        self.secs_per_tock = 1 / float(tocks_per_sec)
         self.callback = callback
         self.num_repeats = num_repeats
         if start_location >= 0:
@@ -259,7 +269,7 @@ class LEDshow(object):
         because we also need to update self.secs_per_tock.
         """
         self.tocks_per_sec = tocks_per_sec
-        self.secs_per_tock = 1/float(tocks_per_sec)
+        self.secs_per_tock = 1 / float(tocks_per_sec)
 
     def _advance(self):
         # Advances through the LEDshow. This method schedules all the LEDs
@@ -277,14 +287,16 @@ class LEDshow(object):
             action_loop_count += 1
 
             # Set the next action time & step to the next location
-            self.next_action_time = ((self.LEDshow_actions[self.current_location]
-                                     ['tocks'] * self.secs_per_tock) +
-                                     self.last_action_time)
+            self.next_action_time = (
+                self.LEDshow_actions[self.current_location]["tocks"]
+                * self.secs_per_tock
+            ) + self.last_action_time
             self.last_action_time = self.next_action_time
 
             # create a dictionary of the current actions
-            for LEDname, color in (self.LEDshow_actions[self.current_location]
-                                   ['LEDs'].iteritems()):
+            for LEDname, color in self.LEDshow_actions[self.current_location][
+                "LEDs"
+            ].iteritems():
 
                 # convert colorwithfade (like 111111-f2) into dictionary of:
                 # color:
@@ -292,25 +304,31 @@ class LEDshow(object):
                 # fadeend:
 
                 color = str(color).zfill(6)
-                LED_dic = {'LEDname': LEDname, 'color': color,
-                           'priority': self.priority, 'blend': self.blend}
+                LED_dic = {
+                    "LEDname": LEDname,
+                    "color": color,
+                    "priority": self.priority,
+                    "blend": self.blend,
+                }
 
                 if "-f" in color:
-                    color = self._convert_colorwithfades_to_time(color,
-                                                            self.secs_per_tock)
-                    LED_dic['dest_color'] = str(color['dest_color']).zfill(6)
-                    LED_dic['fadestart'] = color['fadestart']
-                    LED_dic['fadeend'] = color['fadeend']
-                    LED_dic['color'] = None
+                    color = self._convert_colorwithfades_to_time(
+                        color, self.secs_per_tock
+                    )
+                    LED_dic["dest_color"] = str(color["dest_color"]).zfill(6)
+                    LED_dic["fadestart"] = color["fadestart"]
+                    LED_dic["fadeend"] = color["fadeend"]
+                    LED_dic["color"] = None
 
                 self.game.LEDs._add_to_update_list(LED_dic)
 
                 # If this LED is off and not involved in a fade,
                 # remove it from the active list
                 if LEDname in self.active_LEDs:
-                    if (LED_dic.get('dest_color', None) == '000000' or \
-                            LED_dic.get('dest_color', None) is None) \
-                            and (LED_dic['color'] == '000000'):
+                    if (
+                        LED_dic.get("dest_color", None) == "000000"
+                        or LED_dic.get("dest_color", None) is None
+                    ) and (LED_dic["color"] == "000000"):
                         self.active_LEDs.pop(LEDname)
 
                 else:
@@ -322,15 +340,14 @@ class LEDshow(object):
                         # if we have a current entry for this LEDname, copy its
                         # color to the prevcolor key. (We need this to restore
                         # fades since we need to know where the fade started.)
-                        active_LEDs_dic['prevcolor'] = self.active_LEDs[
-                            LEDname]['color']
+                        active_LEDs_dic["prevcolor"] = self.active_LEDs[LEDname][
+                            "color"
+                        ]
 
-                    active_LEDs_dic['color'] = LED_dic.get('color', None)
-                    active_LEDs_dic['fadestart'] = LED_dic.get('fadestart',
-                                                               None)
-                    active_LEDs_dic['fadeend'] = LED_dic.get('fadeend', None)
-                    active_LEDs_dic['dest_color'] = LED_dic.get('dest_color',
-                                                                None)
+                    active_LEDs_dic["color"] = LED_dic.get("color", None)
+                    active_LEDs_dic["fadestart"] = LED_dic.get("fadestart", None)
+                    active_LEDs_dic["fadeend"] = LED_dic.get("fadeend", None)
+                    active_LEDs_dic["dest_color"] = LED_dic.get("dest_color", None)
 
                     new_dic = {LEDname: active_LEDs_dic}
                     self.active_LEDs.update(new_dic)
@@ -338,7 +355,7 @@ class LEDshow(object):
             # increment this show's current_location pointer and handle repeats
 
             # if we're at the end of the show
-            if self.current_location == self.total_locations-1:
+            if self.current_location == self.total_locations - 1:
 
                 # if we're repeating with an unlimited number of repeats
                 if self.repeat and self.num_repeats == 0:
@@ -347,7 +364,7 @@ class LEDshow(object):
                 # if we're repeating, but only for a certain number of times
                 elif self.repeat and self.num_repeats > 0:
                     # if we haven't hit the repeat limit yet
-                    if self.current_repeat_step < self.num_repeats-1:
+                    if self.current_repeat_step < self.num_repeats - 1:
                         self.current_location = 0
                         self.current_repeat_step += 1
                     else:
@@ -380,17 +397,18 @@ class LEDshow(object):
 
         # Look through our dictionary for any "-f" characters indicating fade
         # times that are still in tocks
-        colorwithfade = color.split('-f')
+        colorwithfade = color.split("-f")
         i = {}
-        i['dest_color'] = colorwithfade[0]
-        i['fadestart'] = self.game.LEDs.current_time
-        i['fadeend'] = ((int(colorwithfade[1]) * secs_per_tock) +
-                        self.game.LEDs.current_time)
+        i["dest_color"] = colorwithfade[0]
+        i["fadestart"] = self.game.LEDs.current_time
+        i["fadeend"] = (
+            int(colorwithfade[1]) * secs_per_tock
+        ) + self.game.LEDs.current_time
         return i
         # todo check to make sure we received a list?
 
 
-class Playlist(object):
+class Playlist:
     """A list of :class:`LEDshow` objects which are then played sequentially.
     Playlists are useful for things like attract mode where you play one show
     for a few seconds, then another, etc.
@@ -444,13 +462,14 @@ class Playlist(object):
 
         ``self.my_playlist.stop()``
     """
+
     def __init__(self, game):
-        super(Playlist, self).__init__()
+        super().__init__()
         self.logger = logging.getLogger("Playlist")
         self.game = game
         self.step_settings_dic = {}  # dictionary with step_num as the key. Values:
-                                 # time - sec this entry runs
-                                 # trigger_show
+        # time - sec this entry runs
+        # trigger_show
         self.step_actions = []  # The actions for the steps in the playlist
         # step_num
         # show
@@ -468,8 +487,9 @@ class Playlist(object):
         self.stopping = False  # used to tell the playlist it should stop on
         # the next advance
 
-    def add_show(self, step_num, show, num_repeats=0, tocks_per_sec=32,
-                 blend=False, repeat=True):
+    def add_show(
+        self, step_num, show, num_repeats=0, tocks_per_sec=32, blend=False, repeat=True
+    ):
         """Adds a LEDshow to this playlist. You have to add at least one show
         before you start playing the playlist.
 
@@ -509,14 +529,18 @@ class Playlist(object):
         # If the show we're adding is already in the step we're adding it to,
         # remove it.
         for step in temp_steps:
-            if step['step_num'] == step_num and step['show'] == show:
+            if step["step_num"] == step_num and step["show"] == show:
                 self.step_actions.remove(step)
-        self.step_actions.append({'step_num': step_num,
-                                  'show': show,
-                                  'num_repeats': num_repeats,
-                                  'tocks_per_sec': tocks_per_sec,
-                                  'repeat': repeat,
-                                  'blend': blend})
+        self.step_actions.append(
+            {
+                "step_num": step_num,
+                "show": show,
+                "num_repeats": num_repeats,
+                "tocks_per_sec": tocks_per_sec,
+                "repeat": repeat,
+                "blend": blend,
+            }
+        )
 
         # Add this number to our list of step numbers
         # We do all this here when we add a show to a playlist so we don't have
@@ -549,8 +573,7 @@ class Playlist(object):
         your trigger show repeating forever then the playlist will never move
         on. (In that case use the *time* parameter to move on based on time.)
         """
-        settings = {'time': time,
-                    'trigger_show': trigger_show}
+        settings = {"time": time, "trigger_show": trigger_show}
         self.step_settings_dic.update({step: settings})
 
     def start(self, priority, repeat=True, repeat_count=0, reset=True):
@@ -593,8 +616,7 @@ class Playlist(object):
             # the playlist from the beginning
             if reset:
                 self.stop(reset=True)
-                self.start(priority=priority, repeat=repeat,
-                           repeat_count=repeat_count)
+                self.start(priority=priority, repeat=repeat, repeat_count=repeat_count)
 
     def stop(self, reset=True):
         """Stops a playlist. Pretty simple.
@@ -604,21 +626,21 @@ class Playlist(object):
         stop and then restart a playlist to pick up where it left off.
         """
         for action in self.step_actions:
-            if action['step_num'] == self.steps[self.current_step_position-1]:
+            if action["step_num"] == self.steps[self.current_step_position - 1]:
                 # we have to use the "-1" above because the playlist current
                 # position represents the *next* step of shows to play. So when
                 # we stop the current show, we have to come back one.
-                action['show'].stop()
+                action["show"].stop()
         self.running = False
         for item in self.game.LEDs.queue:
-            if item['playlist'] == self:
+            if item["playlist"] == self:
                 self.game.LEDs.queue.remove(item)
         if reset:
             self.current_step_position = 0
             self.current_repeat_loop = 0
 
     def _advance(self):
-        #Runs the LEDshow(s) at the current step of the plylist and advances
+        # Runs the LEDshow(s) at the current step of the plylist and advances
         # the pointer to the next step
 
         # Creating a local variable for this just to keep the code easier to
@@ -626,18 +648,18 @@ class Playlist(object):
         # skip numbers in the steps in the playlist, like [1, 2, 5]
         current_step_value = self.steps[self.current_step_position]
 
-        prev_step = self.steps[self.current_step_position-1]
+        prev_step = self.steps[self.current_step_position - 1]
 
         # Stop the previous step's shows
         # Don't do anything if this playlist hasn't started yet
         if not self.starting:
             for action in self.step_actions:
-                if action['step_num'] == prev_step:
+                if action["step_num"] == prev_step:
                     # We have to make sure the show is running before we try to
                     # stop it, because if this show was a trigger show then it
                     # stopped itself already
-                    if action['show'].running:
-                        action['show'].stop()
+                    if action["show"].running:
+                        action["show"].stop()
         self.starting = False
 
         # If this playlist is marked to stop, then stop here
@@ -647,18 +669,18 @@ class Playlist(object):
         # Now do the actions in our current step
 
         # Pull in the stuff we need for this current step
-        step_time = self.step_settings_dic[current_step_value]['time']
-        step_trigger_show = self.step_settings_dic[current_step_value]['trigger_show']
+        step_time = self.step_settings_dic[current_step_value]["time"]
+        step_trigger_show = self.step_settings_dic[current_step_value]["trigger_show"]
 
         # Now step through all the actions for this step and schedule the
         # LEDshows to play
         for action in self.step_actions:
-            if action['step_num'] == current_step_value:
-                show = action['show']
-                num_repeats = action['num_repeats']
-                tocks_per_sec = action['tocks_per_sec']
-                blend = action['blend']
-                repeat = action['repeat']
+            if action["step_num"] == current_step_value:
+                show = action["show"]
+                num_repeats = action["num_repeats"]
+                tocks_per_sec = action["tocks_per_sec"]
+                blend = action["blend"]
+                repeat = action["repeat"]
 
                 if show == step_trigger_show:
                     # This show finishing will be used to trigger the advancement
@@ -675,18 +697,27 @@ class Playlist(object):
                 else:
                     callback = None
 
-                show.play(repeat=repeat, priority=self.priority, blend=blend,
-                          tocks_per_sec=tocks_per_sec, num_repeats=num_repeats,
-                          callback=callback)
+                show.play(
+                    repeat=repeat,
+                    priority=self.priority,
+                    blend=blend,
+                    tocks_per_sec=tocks_per_sec,
+                    num_repeats=num_repeats,
+                    callback=callback,
+                )
 
         # if we don't have a trigger_show but we have a time value for this
         # step, set up the time to move on
         if step_time and not step_trigger_show:
-            self.game.LEDs.queue.append({'playlist': self,
-                                        'action_time': (self.game.LEDs.current_time + step_time)})
+            self.game.LEDs.queue.append(
+                {
+                    "playlist": self,
+                    "action_time": (self.game.LEDs.current_time + step_time),
+                }
+            )
 
         # Advance our current_step_position counter
-        if self.current_step_position == len(self.steps)-1:
+        if self.current_step_position == len(self.steps) - 1:
             # We're at the end of our playlist. So now what?
             self.current_step_position = 0
 
@@ -694,7 +725,7 @@ class Playlist(object):
             if self.repeat:
                 # Are we repeating forever, or x number of times?
                 if self.repeat_count:  # we're repeating x number of times
-                    if self.current_repeat_loop < self.repeat_count-1:
+                    if self.current_repeat_loop < self.repeat_count - 1:
                         self.current_repeat_loop += 1
                     else:
                         self.stopping = True
@@ -708,7 +739,7 @@ class Playlist(object):
             self.current_step_position += 1
 
 
-class LEDcontroller(object):
+class LEDcontroller:
     """Manages all the LEDs in the pinball machine. Handles updates,
     priorities, restores, running and stopping LEDshows, etc. There should be
     only one per game.
@@ -725,6 +756,7 @@ class LEDcontroller(object):
     todo
 
     """
+
     def __init__(self, game):
         self.logger = logging.getLogger("LEDcontroller")
         self.game = game
@@ -802,7 +834,7 @@ class LEDcontroller(object):
         if show in running_shows_copy:
             self.running_shows.remove(show)
             show.running = False
-             # Restore the LEDs not "holding" the final states
+            # Restore the LEDs not "holding" the final states
             if not show.hold:
                 for LEDname in show.active_LEDs:
                     self.restore_LED_state(LEDname, show.priority)
@@ -820,7 +852,7 @@ class LEDcontroller(object):
         active_scripts_copy = list(self.active_scripts)
 
         for entry in active_scripts_copy:
-            if entry['show'] == show:
+            if entry["show"] == show:
                 self.active_scripts.remove(entry)
 
         if show.callback:
@@ -866,21 +898,28 @@ class LEDcontroller(object):
         queue_copy = list(self.queue)
 
         for item in queue_copy:
-            if item['action_time'] <= self.current_time:
+            if item["action_time"] <= self.current_time:
                 # If the queue is for a fade, we ignore the current color
-                if item.get('fadeend', None):
-                    self._add_to_update_list({'LEDname': item['LEDname'],
-                                             'priority': item['priority'],
-                                             'blend': item.get('blend', None),
-                                             'fadeend': item.get('fadeend', None),
-                                             'dest_color': item.get('dest_color',
-                                                                    None)})
-                elif item.get('color', None):
-                    self._add_to_update_list({'LEDname': item['LEDname'],
-                                             'priority': item['priority'],
-                                             'color': item.get('color', None)})
-                elif item.get('playlist', None):
-                    item['playlist']._advance()
+                if item.get("fadeend", None):
+                    self._add_to_update_list(
+                        {
+                            "LEDname": item["LEDname"],
+                            "priority": item["priority"],
+                            "blend": item.get("blend", None),
+                            "fadeend": item.get("fadeend", None),
+                            "dest_color": item.get("dest_color", None),
+                        }
+                    )
+                elif item.get("color", None):
+                    self._add_to_update_list(
+                        {
+                            "LEDname": item["LEDname"],
+                            "priority": item["priority"],
+                            "color": item.get("color", None),
+                        }
+                    )
+                elif item.get("playlist", None):
+                    item["playlist"]._advance()
 
                 # We have to check again since one of these advances could have
                 # removed it already
@@ -890,8 +929,7 @@ class LEDcontroller(object):
         if self.update_list:
             self._do_update()
 
-    def restore_LED_state(self, LEDname, priority=None, fadeend=None,
-                          color=None):
+    def restore_LED_state(self, LEDname, priority=None, fadeend=None, color=None):
         """Restores an LED to whatever state it should be in below the passed
         priority parameter. Similar to :meth:`get_LED_state` except it actually
         makes the change rather than only returning values.
@@ -933,15 +971,19 @@ class LEDcontroller(object):
         # If there's an incoming blend, we need to calculate the colors and
         # write them into our update
         if fadeend:  # this catches if the LED we're restoring FROM is fading
-                     # with a blend to whatever's below it
+            # with a blend to whatever's below it
             if len(restored_state) == 3:  # the LED we're restoring to is not
                 # involved in a fade, so we can just apply the fade of the LED
                 # we're fading away from to fade to the new LED's color
-                self._add_to_update_list({'LEDname': LEDname,
-                                         'dest_color': restored_state[0],
-                                         'priority': restored_state[1],
-                                         'blend': restored_state[2],
-                                         'fadeend': fadeend})
+                self._add_to_update_list(
+                    {
+                        "LEDname": LEDname,
+                        "dest_color": restored_state[0],
+                        "priority": restored_state[1],
+                        "blend": restored_state[2],
+                        "fadeend": fadeend,
+                    }
+                )
             else:  # this means that our LED we're restoring *from* has a fade
                 # and blend AND the LED we're restoring *to* is also in the
                 # process of fading. So this is kind of complex because we have
@@ -957,18 +999,24 @@ class LEDcontroller(object):
                 # LED fade is done. To do that we have use our old LED's
                 # fadeend time to calculate the midpoint
 
-                target_color = self.get_midfade_color(fadestart=restored_state[5],
-                                                      fadeend=restored_state[3],
-                                                      midpoint_time=fadeend,
-                                                      orig_color=color,
-                                                      dest_color=restored_state[4])
+                target_color = self.get_midfade_color(
+                    fadestart=restored_state[5],
+                    fadeend=restored_state[3],
+                    midpoint_time=fadeend,
+                    orig_color=color,
+                    dest_color=restored_state[4],
+                )
 
                 # Now let's schedule it.
-                self._add_to_update_list({'LEDname': LEDname,
-                                         'dest_color': target_color,
-                                         'priority': restored_state[1],
-                                         'blend': restored_state[2],
-                                         'fadeend': fadeend})
+                self._add_to_update_list(
+                    {
+                        "LEDname": LEDname,
+                        "dest_color": target_color,
+                        "priority": restored_state[1],
+                        "blend": restored_state[2],
+                        "fadeend": fadeend,
+                    }
+                )
 
                 # todo schedule a script that is for this LEDname, with a
                 # color of 000000, and an endtime of when the fadeend from
@@ -982,29 +1030,41 @@ class LEDcontroller(object):
                                    'blend': True,
                                    'priority': priority})
                 """
-                self.queue.append({'action_time': fadeend,
-                                   'LEDname': LEDname,
-                                   'blend': True,
-                                   'priority': priority,
-                                   'fadeend': restored_state[3],
-                                   'dest_color': restored_state[4]})
+                self.queue.append(
+                    {
+                        "action_time": fadeend,
+                        "LEDname": LEDname,
+                        "blend": True,
+                        "priority": priority,
+                        "fadeend": restored_state[3],
+                        "dest_color": restored_state[4],
+                    }
+                )
 
         # otherwise our LED is not involved in a fade, so just restore
         # whatever we got immediately
         else:
             if len(restored_state) == 3:
-                self._add_to_update_list({'LEDname': LEDname,
-                                         'color': restored_state[0],
-                                         'priority': restored_state[1],
-                                         'blend': restored_state[2]})
+                self._add_to_update_list(
+                    {
+                        "LEDname": LEDname,
+                        "color": restored_state[0],
+                        "priority": restored_state[1],
+                        "blend": restored_state[2],
+                    }
+                )
 
             else:
-                self._add_to_update_list({'LEDname': LEDname,
-                                         'color': restored_state[0],
-                                         'priority': restored_state[1],
-                                         'blend': restored_state[2],
-                                         'fadeend': restored_state[3],
-                                         'dest_color': restored_state[4]})
+                self._add_to_update_list(
+                    {
+                        "LEDname": LEDname,
+                        "color": restored_state[0],
+                        "priority": restored_state[1],
+                        "blend": restored_state[2],
+                        "fadeend": restored_state[3],
+                        "dest_color": restored_state[4],
+                    }
+                )
 
     def get_LED_state(self, LEDname, priority=0):
         """Looks at all the active shows and returns the current
@@ -1034,7 +1094,7 @@ class LEDcontroller(object):
         for show in self.running_shows:
             if LEDname in show.active_LEDs and show.priority < priority:
                 if show.priority > new_priority:
-                    new_color = show.active_LEDs[LEDname]['color']
+                    new_color = show.active_LEDs[LEDname]["color"]
                     new_priority = show.priority
                     new_blend = show.blend
                     # if we have a fade, grab those values now
@@ -1042,25 +1102,21 @@ class LEDcontroller(object):
                     # by a higher priority. No sense don't that math now since
                     # we might not need it
 
-                    if show.active_LEDs[LEDname]['fadeend']:
+                    if show.active_LEDs[LEDname]["fadeend"]:
                         # first check to make sure the fade is still happening
-                            if (show.active_LEDs[LEDname]['fadeend'] >
-                                    self.current_time):
-                                new_prevcolor = (show.active_LEDs[LEDname].
-                                                 get('prevcolor', "000000"))
-                                new_fadestart = (show.active_LEDs[LEDname]
-                                                 ['fadestart'])
-                                new_fadeend = (show.active_LEDs[LEDname]
-                                               ['fadeend'])
-                                new_dest_color = (show.active_LEDs[LEDname]
-                                                  ['dest_color'])
-                            else:
-                                # we had a fade, but it's no longer active
-                                new_color = (show.active_LEDs[LEDname]
-                                             ['dest_color'])
+                        if show.active_LEDs[LEDname]["fadeend"] > self.current_time:
+                            new_prevcolor = show.active_LEDs[LEDname].get(
+                                "prevcolor", "000000"
+                            )
+                            new_fadestart = show.active_LEDs[LEDname]["fadestart"]
+                            new_fadeend = show.active_LEDs[LEDname]["fadeend"]
+                            new_dest_color = show.active_LEDs[LEDname]["dest_color"]
+                        else:
+                            # we had a fade, but it's no longer active
+                            new_color = show.active_LEDs[LEDname]["dest_color"]
 
                     else:  # reset these since the new LED we found doesn't
-                           # use them
+                        # use them
                         new_prevcolor = None
                         new_fadestart = None
                         new_fadeend = None
@@ -1072,31 +1128,33 @@ class LEDcontroller(object):
         # restoring to, then we're going to return this color instead.
 
         for entry in self.manual_commands:
-            if entry['LEDname'] == LEDname and \
-                    entry['priority'] > new_priority and \
-                    entry['priority'] < priority:
-                new_color = entry['color']
-                new_priority = entry['priority']
+            if (
+                entry["LEDname"] == LEDname
+                and entry["priority"] > new_priority
+                and entry["priority"] < priority
+            ):
+                new_color = entry["color"]
+                new_priority = entry["priority"]
                 new_prevcolor = None
                 new_fadestart = None
                 new_fadeend = None
                 new_dest_color = None
                 new_blend = None
 
-                if entry.get('fadeend', None):
+                if entry.get("fadeend", None):
                     # we have a command that involves a fade
-                    if entry['fadeend'] > self.current_time:
-                    # the fade is still happening
-                        new_fadeend = entry['fadeend']
-                        new_dest_color = entry['dest_color']
-                        new_fadestart = entry['fadestart']
-                        new_prevcolor = entry['prevcolor']
-                        new_blend = entry['blend']
+                    if entry["fadeend"] > self.current_time:
+                        # the fade is still happening
+                        new_fadeend = entry["fadeend"]
+                        new_dest_color = entry["dest_color"]
+                        new_fadestart = entry["fadestart"]
+                        new_prevcolor = entry["prevcolor"]
+                        new_blend = entry["blend"]
                         new_color = "000000"
                     else:
                         # we had a fade, but it's over now, so we just need to
                         # restore this like a static color
-                        new_color = entry['dest_color']
+                        new_color = entry["dest_color"]
 
         # now that we have the values, we can process them to return them
 
@@ -1109,21 +1167,30 @@ class LEDcontroller(object):
             # figure out where it is now and where it's going
 
             # new_color is where this LED is now
-            new_color = self.get_midfade_color(fadestart=new_fadestart,
-                                               fadeend=new_fadeend,
-                                               midpoint_time=self.current_time,
-                                               orig_color=new_prevcolor,
-                                               dest_color=new_dest_color)
+            new_color = self.get_midfade_color(
+                fadestart=new_fadestart,
+                fadeend=new_fadeend,
+                midpoint_time=self.current_time,
+                orig_color=new_prevcolor,
+                dest_color=new_dest_color,
+            )
 
         # contruct the return based on what we have
         if new_fadeend:
-            return new_color, new_priority, new_blend, new_fadeend,\
-                new_dest_color, new_fadestart
+            return (
+                new_color,
+                new_priority,
+                new_blend,
+                new_fadeend,
+                new_dest_color,
+                new_fadestart,
+            )
         else:
             return new_color, new_priority, new_blend
 
-    def get_midfade_color(self, fadestart, fadeend, midpoint_time, orig_color,
-                          dest_color):
+    def get_midfade_color(
+        self, fadestart, fadeend, midpoint_time, orig_color, dest_color
+    ):
         """Figures out the new fade values based on a current fade in progress.
 
         Parameters:
@@ -1154,9 +1221,9 @@ class LEDcontroller(object):
         for i in range(len(dest_color)):
             delta = (dest_color[i] - orig_color[i]) * current_percent
             if delta < 0:  # need to subtract from orig color
-                color.append(int(orig_color[i]-delta))
+                color.append(int(orig_color[i] - delta))
             else:  # need to add to orig color
-                color.append(int(orig_color[i]+delta))
+                color.append(int(orig_color[i] + delta))
         return color
 
     def _add_to_update_list(self, update):
@@ -1167,8 +1234,9 @@ class LEDcontroller(object):
         # entry.
 
         for item in self.update_list:
-            if item['LEDname'] == update['LEDname'] and (item['priority'] ==
-                                                         update['priority']):
+            if item["LEDname"] == update["LEDname"] and (
+                item["priority"] == update["priority"]
+            ):
                 self.update_list.remove(item)
         self.update_list.append(update)
 
@@ -1187,9 +1255,9 @@ class LEDcontroller(object):
         # If there are multiple entries for one LEDname, only keep the one with
         # the highest priority
 
-        filtered={}
-        for di in sorted(self.update_list, key=lambda d: d['priority']):
-            filtered[di['LEDname']] = di
+        filtered = {}
+        for di in sorted(self.update_list, key=lambda d: d["priority"]):
+            filtered[di["LEDname"]] = di
 
         self.update_list = filtered.values()
 
@@ -1200,23 +1268,21 @@ class LEDcontroller(object):
         for item in current_list:
             # Only perform the update if the priority is higher than whatever
             # touched that LED last.
-            if item['priority'] >= self.LED_priorities.get(item['LEDname']):
+            if item["priority"] >= self.LED_priorities.get(item["LEDname"]):
 
                 # Now we're doing the actual update. First set our color:
 
                 # If we have an entry for color and it is not None
-                if ("color" in item) and item['color']:
-                    if type(item['color']) is not list:
-                        item['color'] = item['color'].zfill(6)
-                    if item.get('blend', False) and \
-                            (item['color'] == '000000' or\
-                             item['color'] == [0, 0, 0]):
-                        self.restore_LED_state(item['LEDname'],
-                                               item['priority'])
+                if item.get("color") is not None:
+                    if type(item["color"]) is not list:
+                        item["color"] = item["color"].zfill(6)
+                    if item.get("blend", False) and (
+                        item["color"] == "000000" or item["color"] == [0, 0, 0]
+                    ):
+                        self.restore_LED_state(item["LEDname"], item["priority"])
                     else:
-                        if type(item['color']) is not list:
-                            item['color'] = self.convert_hex_to_list(item\
-                                                                     ['color'])
+                        if type(item["color"]) is not list:
+                            item["color"] = self.convert_hex_to_list(item["color"])
 
                         # Uncomment the comment block below if you want to log
                         # every LED action. Warning this will be a crazy amount
@@ -1226,28 +1292,30 @@ class LEDcontroller(object):
                                               item['LEDname'], item['color'])
                         """
                         # now do the actual update
-                        self.game.leds[item['LEDname']].color(item['color'])
+                        self.game.leds[item["LEDname"]].color(item["color"])
                         # Update our list of LEDs so we know which priority
                         # last touched it
-                        self.LED_priorities[item['LEDname']] = item['priority']
+                        self.LED_priorities[item["LEDname"]] = item["priority"]
 
                 # Next, if we have a fade:
-                if "fadeend" in item and item.get('fadeend', None):
-                    if type(item['dest_color']) is not list:
-                        item['dest_color'] = item['dest_color'].zfill(6)
-                    if item['blend'] and \
-                            (item['dest_color'] == '000000' or\
-                             item['dest_color'] == [0, 0, 0]):
-                        self.restore_LED_state(item['LEDname'],
-                                               item['priority'],
-                                               item['fadeend'])
+                if "fadeend" in item and item.get("fadeend", None):
+                    if type(item["dest_color"]) is not list:
+                        item["dest_color"] = item["dest_color"].zfill(6)
+                    if item["blend"] and (
+                        item["dest_color"] == "000000"
+                        or item["dest_color"] == [0, 0, 0]
+                    ):
+                        self.restore_LED_state(
+                            item["LEDname"], item["priority"], item["fadeend"]
+                        )
                     else:
-                        if type(item['dest_color']) is not list:
-                            item['dest_color'] = self.convert_hex_to_list(
-                                item['dest_color'])
+                        if type(item["dest_color"]) is not list:
+                            item["dest_color"] = self.convert_hex_to_list(
+                                item["dest_color"]
+                            )
 
                         # Calculate the fade duration:
-                        fadems = (item['fadeend'] - self.current_time) * 1000
+                        fadems = (item["fadeend"] - self.current_time) * 1000
                         # Uncomment the comment block below if you want to log
                         # every LED action. Warning this will be a crazy amount
                         # of logging
@@ -1257,15 +1325,16 @@ class LEDcontroller(object):
                                               item['LEDname'],
                                               item['dest_color'], fadems)
                         """
-                        self.game.leds[item['LEDname']].color_with_fade(
-                            item['dest_color'],fadems)
+                        self.game.leds[item["LEDname"]].color_with_fade(
+                            item["dest_color"], fadems
+                        )
                         # Update our list of LED priorities so we know which
                         # priority last touched each LED. We use this to know
                         # if an update should overwrite the actual LED in the
                         # game.
-                        self.LED_priorities[item['LEDname']] = item['priority']
+                        self.LED_priorities[item["LEDname"]] = item["priority"]
 
-        current_list=[]
+        current_list = []
 
         # If we got any updates while iterating this list, process them now
         if self.update_list:
@@ -1287,12 +1356,21 @@ class LEDcontroller(object):
             inputstring = "000000"
         inputstring = str(inputstring).zfill(6)
         for i in xrange(0, len(inputstring), 2):  # step through every 2 chars
-            output.append(int(inputstring[i:i+2], 16))
+            output.append(int(inputstring[i : i + 2], 16))
             # convert from base 16 (hex) to int
         return output
 
-    def run_script(self, LEDname, script, priority=0, repeat=True, blend=False,
-                   tps=1000, num_repeats=0, callback=None):
+    def run_script(
+        self,
+        LEDname,
+        script,
+        priority=0,
+        repeat=True,
+        blend=False,
+        tps=1000,
+        num_repeats=0,
+        callback=None,
+    ):
         """Runs a LED script. Scripts are similar to LEDshows, except they only
         apply to single LEDs and you can "attach" any script to any LED.
         Scripts are used anytime you want an LED to have more than one action.
@@ -1392,24 +1470,28 @@ class LEDcontroller(object):
         LEDshow_actions = []
 
         for step in script:
-            if step.get('fade', None):
-                color = str(step['color']) + "-f" + str(step['time'])
+            if step.get("fade", None):
+                color = str(step["color"]) + "-f" + str(step["time"])
             else:
-                color = str(step['color'])
+                color = str(step["color"])
 
             color_dic = {LEDname: color}
-            current_action = {'tocks': step['time'],
-                              'LEDs': color_dic}
+            current_action = {"tocks": step["time"], "LEDs": color_dic}
             LEDshow_actions.append(current_action)
         show = None
         show = LEDshow(self.game, actions=LEDshow_actions)
-        show_obj = show.play(repeat=repeat, tocks_per_sec=tps,
-                             priority=priority, blend=blend,
-                             num_repeats=num_repeats, callback=callback)
+        show_obj = show.play(
+            repeat=repeat,
+            tocks_per_sec=tps,
+            priority=priority,
+            blend=blend,
+            num_repeats=num_repeats,
+            callback=callback,
+        )
 
-        self.active_scripts.append({'LEDname': LEDname,
-                                    'priority': priority,
-                                    'show': show})
+        self.active_scripts.append(
+            {"LEDname": LEDname, "priority": priority, "show": show}
+        )
 
         return show_obj
 
@@ -1446,28 +1528,29 @@ class LEDcontroller(object):
 
         if show:
             for entry in active_scripts_copy:
-                if entry['show'] == show:
+                if entry["show"] == show:
                     self._end_show(show)
         elif LEDname and priority:
             for entry in active_scripts_copy:
-                if entry['LEDname'] == LEDname and entry['priority'] == priority:
-                    self._end_show(entry['show'])
+                if entry["LEDname"] == LEDname and entry["priority"] == priority:
+                    self._end_show(entry["show"])
         elif LEDname:
             for entry in active_scripts_copy:
-                if entry['LEDname'] == LEDname:
-                    self._end_show(entry['show'])
+                if entry["LEDname"] == LEDname:
+                    self._end_show(entry["show"])
         elif priority:
             for entry in active_scripts_copy:
-                if entry['priority'] == priority:
-                    self._end_show(entry['show'])
+                if entry["priority"] == priority:
+                    self._end_show(entry["show"])
         else:
             for entry in active_scripts_copy:
-                self._end_show(entry['show'])
+                self._end_show(entry["show"])
 
         # todo callback?
 
-    def enable(self, LEDname, priority=0, color=None, dest_color=None,
-               fade=0, blend=True):
+    def enable(
+        self, LEDname, priority=0, color=None, dest_color=None, fade=0, blend=True
+    ):
         """This is a single one-time command to enable an LED.
 
         Parameters:
@@ -1503,7 +1586,7 @@ class LEDcontroller(object):
         wants with LEDs and you don't have to worry about a higher priority
         mode clearing out an LED and messing up the lower priority mode's
         status.
-        
+
         The ability for this enable method to also keep track of the priority
         that a LED is enabled is the reason you'd want to use this method
         versus calling :meth:`leds.color` directly. If you do use
@@ -1513,10 +1596,8 @@ class LEDcontroller(object):
         """
 
         # Add / update this latest info in our manual_commands dictionary
-        params = {'LEDname': LEDname,
-                  'color': color,
-                  'priority': priority}
-        #fadeend = None
+        params = {"LEDname": LEDname, "color": color, "priority": priority}
+        # fadeend = None
 
         if fade:
             fadestart = self.current_time
@@ -1532,14 +1613,21 @@ class LEDcontroller(object):
                 color = None
             prevcolor = color
 
-            params.update({'fadeend': fadeend, 'blend': blend,
-                           'fadestart': fadestart, 'dest_color': dest_color,
-                           'color': color, 'prevcolor': prevcolor})
+            params.update(
+                {
+                    "fadeend": fadeend,
+                    "blend": blend,
+                    "fadestart": fadestart,
+                    "dest_color": dest_color,
+                    "color": color,
+                    "prevcolor": prevcolor,
+                }
+            )
 
         # check to see if we already have an entry for this LEDname / priority
         # pair. If so, remove it.
         for entry in self.manual_commands:
-            if entry['LEDname'] == LEDname and entry['priority'] == priority:
+            if entry["LEDname"] == LEDname and entry["priority"] == priority:
                 self.manual_commands.remove(entry)
 
         # now add our new command to the list
@@ -1548,17 +1636,21 @@ class LEDcontroller(object):
         # Add this command to our update_list so it gets serviced along with
         # all the other updates
         if fade:  # if we have a fade
-            self._add_to_update_list({'LEDname': LEDname,
-                                     'priority': priority,
-                                     'dest_color': dest_color,
-                                     'fadeend': fadeend,
-                                     'blend': blend,
-                                     'fadestart': fadestart,
-                                     'prevcolor': prevcolor})
+            self._add_to_update_list(
+                {
+                    "LEDname": LEDname,
+                    "priority": priority,
+                    "dest_color": dest_color,
+                    "fadeend": fadeend,
+                    "blend": blend,
+                    "fadestart": fadestart,
+                    "prevcolor": prevcolor,
+                }
+            )
         else:  # no fade
-            self._add_to_update_list({'LEDname': LEDname,
-                                     'priority': priority,
-                                     'color': color})
+            self._add_to_update_list(
+                {"LEDname": LEDname, "priority": priority, "color": color}
+            )
 
     def disable(self, LEDname, priority=0, clear_all=True):
         """Command to disable an LED
@@ -1597,21 +1689,19 @@ class LEDcontroller(object):
         if clear_all:
             if priority:  # clear all, with priority specified
                 for entry in self.manual_commands:
-                    if entry['LEDname'] == LEDname and \
-                            entry['priority'] <= priority:
+                    if entry["LEDname"] == LEDname and entry["priority"] <= priority:
                         self.manual_commands.remove(entry)
                         priority_to_restore = priority
                         self.restore_LED_state(LEDname, priority_to_restore)
             else:  # clear all, no priority specified
                 for entry in self.manual_commands:
-                    if entry['LEDname'] == LEDname:
+                    if entry["LEDname"] == LEDname:
                         self.manual_commands.remove(entry)
                         self.restore_LED_state(LEDname, priority_to_restore)
 
         else:  # just remove any commands of the priority passed
             for entry in self.manual_commands:
-                if entry['LEDname'] == LEDname and \
-                        entry['priority'] == priority:
+                if entry["LEDname"] == LEDname and entry["priority"] == priority:
                     self.manual_commands.remove(entry)
                     priority_to_restore = 0
                     self.restore_LED_state(LEDname, priority_to_restore)
