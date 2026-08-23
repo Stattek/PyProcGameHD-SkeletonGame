@@ -1,9 +1,10 @@
 ####
 ## Example of a blank mode
 
+import logging
+
 import procgame.game
 from procgame.game import AdvancedMode
-import logging
 
 
 class ExBlankMode(procgame.game.AdvancedMode):
@@ -18,7 +19,7 @@ class ExBlankMode(procgame.game.AdvancedMode):
 
         You _need_ to call the super class' init method:
         """
-        super(ExBlankMode, self).__init__(
+        super().__init__(
             game=game, priority=2, mode_type=AdvancedMode.Game
         )  # 2 is lower than BGM
         # notice this mode has a mode_type of 'AdvancedMode.Game'
@@ -27,7 +28,6 @@ class ExBlankMode(procgame.game.AdvancedMode):
 
         # useful to set-up a custom logger so it's easier to track debugging messages for this mode
         self.logger = logging.getLogger("ExBlankMode")
-        pass
 
     def mode_started(self):
         self.logger.debug("My mode started")
@@ -70,4 +70,3 @@ class ExBlankMode(procgame.game.AdvancedMode):
     def evt_ball_ending(self, shoot_again, last_ball):
         # don't show the target light between players/balls
         self.game.lamps.target1.disable()
-

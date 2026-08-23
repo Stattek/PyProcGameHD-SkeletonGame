@@ -4,19 +4,15 @@
 #
 # The following imports add the "usual" stuff every PyProcGame needs
 import logging
-import procgame
-import procgame.game
-import procgame.dmd
-from procgame.game import SkeletonGame
-from procgame import *
 import os
-from procgame.modes import Attract
-from procgame.game.skeletongame import run_proc_game
 
 # these are modes that you define, and probably store in
 # a my_modes folder under this one....
-import my_modes
-from my_modes import BaseGameMode, MachineMonitorMode, ExBlankMode
+from my_modes import BaseGameMode, ExBlankMode, MachineMonitorMode
+
+from procgame import *
+from procgame.game import SkeletonGame
+from procgame.game.skeletongame import run_proc_game
 
 # set up a few more things before we get started
 # the logger's configuration and format
@@ -46,7 +42,7 @@ class T2Game(SkeletonGame):
         #    name the shooter-feeding coil 'trough'
         #    name trough switches numbered left-to-right trough1, trough2, trough3
         #    name the shooter lane switch 'shooter'
-        super(T2Game, self).__init__("config/T2.yaml", self.curr_file_path)
+        super().__init__("config/T2.yaml", self.curr_file_path)
 
         self.base_game_mode = BaseGameMode(game=self)
         self.blank_mode = ExBlankMode(game=self)
@@ -70,7 +66,7 @@ class T2Game(SkeletonGame):
     # called when you want to fully reset the game
     def reset(self):
         # EVERY SkeletonGame game should start its reset() with a call to super()
-        super(T2Game, self).reset()
+        super().reset()
 
         # initialize the mode variables; the general form is:
         # self.varName = fileName.classModeName(game=self)
@@ -102,7 +98,7 @@ class T2Game(SkeletonGame):
         """
 
         # always start by calling this:
-        super(T2Game, self).do_ball_search(silent)
+        super().do_ball_search(silent)
         # this increases self.ball_search_tries; which you may want to check to
         # escalate the 'level' of your search.
 

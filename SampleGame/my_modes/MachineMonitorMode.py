@@ -1,6 +1,5 @@
 import procgame.game
 from procgame.game import AdvancedMode
-import logging
 
 
 class MachineMonitorMode(procgame.game.AdvancedMode):
@@ -11,9 +10,7 @@ class MachineMonitorMode(procgame.game.AdvancedMode):
 
     def __init__(self, game):
         # Mode type is System --> Persists even if a game is not in play!
-        super(MachineMonitorMode, self).__init__(
-            game=game, priority=5, mode_type=AdvancedMode.System
-        )
+        super().__init__(game=game, priority=5, mode_type=AdvancedMode.System)
 
     def evt_volume_down(self, vol):
         self.game.displayText("Volume Down : %d" % int(vol))

@@ -1,6 +1,5 @@
 import procgame.game
 from procgame.game import AdvancedMode
-import logging
 
 
 class BaseGameMode(procgame.game.AdvancedMode):
@@ -31,9 +30,7 @@ class BaseGameMode(procgame.game.AdvancedMode):
 
         # a call to 'super' call's the parent object's __init__ method
         # in this case, it calls the procgame.game.Mode's init()
-        super(BaseGameMode, self).__init__(
-            game=game, priority=5, mode_type=AdvancedMode.Game
-        )
+        super().__init__(game=game, priority=5, mode_type=AdvancedMode.Game)
 
         # You might be used to storing data, right in the mode, like as follows:
         # self.multiplier = 0
@@ -112,7 +109,6 @@ class BaseGameMode(procgame.game.AdvancedMode):
         from the mode queue; this might happen multiple times per game,
         depending on how the Game itself adds/removes it
         """
-        pass
 
     def update_lamps(self):
         """
