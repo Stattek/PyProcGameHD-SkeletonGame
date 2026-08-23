@@ -1,11 +1,13 @@
 import time
+
 import pinproc
 
-from .game import gameitems
 from procgame import config
 
+from .game import gameitems
 
-class FakePinPROC(object):
+
+class FakePinPROC:
     """Stand-in class for :class:`pinproc.PinPROC`.  Generates DMD events."""
 
     last_dmd_event = 0
@@ -29,13 +31,12 @@ class FakePinPROC(object):
             self.frames_per_second = config.value_for_key_path("dmd_framerate", 30)
 
         # Instantiate 256 drivers.
-        for i in range(0, 256):
+        for i in range(256):
             name = "driver" + str(i)
             self.drivers.add(name, gameitems.VirtualDriver(None, name, i, True))
 
     def noop(self, *args, **kwargs):
         """Empty method used when no virtual equivalent to a pypinproc method is necessary.  This allows a game to switch back and forth between pypinproc and this fakepinproc class without modification."""
-        pass
 
     def switch_get_states(self, *args):
         """Method to provide default switch states."""
@@ -162,7 +163,7 @@ class FakePinPROCPlayback(FakePinPROC):
     _states = [0] * 256  # Local switch state repository
 
     def __init__(self, machine_type):
-        super(FakePinPROCPlayback, self).__init__(machine_type)
+        super().__init__(machine_type)
 
         self._states = [0] * 256  # Initialize all switch values to 0
 
@@ -188,7 +189,7 @@ class FakePinPROCPlayback(FakePinPROC):
 
     def get_events(self):
         # Populate the events list from our fakepinproc DMD events, etc
-        events = super(FakePinPROCPlayback, self).get_events()
+        events = super().get_events()
         # Mark down the current time so we can check whether or not we should fire an event yet
         current_time = self._get_current_simulator_time()
 

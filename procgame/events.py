@@ -1,4 +1,4 @@
-class Event(object):
+class Event:
     """Describes an event dispatched by :class:`EventManager`."""
 
     name = None
@@ -9,7 +9,7 @@ class Event(object):
     """Any information associated with the event."""
 
     def __init__(self, name, object, info):
-        super(Event, self).__init__()
+        super().__init__()
         self.name = name
         self.object = object
         self.info = info
@@ -18,7 +18,7 @@ class Event(object):
 global_event_manager = None
 
 
-class EventManager(object):
+class EventManager:
     """Dispatches events to event handlers.  Until better documentation is created, it may be helpful to know that this class is strongly influenced by the Cocoa class :class:`NSNotificationCenter`.
 
     Most users will want to obtain the default instance using :meth:`default`::
@@ -35,7 +35,7 @@ class EventManager(object):
         return global_event_manager
 
     def __init__(self):
-        super(EventManager, self).__init__()
+        super().__init__()
         # __handlers is keyed off of the event name, with the contents being a hash of the object to the handler arrays:
         # __handlers[name][object][handler_index]
         self.__handlers = {}
