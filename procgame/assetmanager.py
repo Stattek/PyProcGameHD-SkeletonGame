@@ -1,14 +1,16 @@
+import sdl2
+
 from procgame import dmd
 from procgame.dmd.sdl2_displaymanager import sdl2_DisplayManager
-import sdl2
 
 """
 """
+import logging
 import os
 import sys
-import yaml
-import logging
 import timeit
+
+import yaml
 
 # logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 from procgame.yaml_helper import value_for_key
@@ -34,7 +36,7 @@ class DictWithDefault(dict):
         return self[self.miss_key]
 
 
-class AssetManager(object):
+class AssetManager:
     """The AssetManager class reads the asset_list.yaml file, loading from it Animations, Fonts, Lampshows, etc.
     the values data structure is loaded from :file:`./config/asset_list.yaml` when this submodule is loaded;
     if not found there, the asset_loader will try :file:`./asset_list.yaml` before giving up.
@@ -93,7 +95,7 @@ class AssetManager(object):
             self.logger.error("Error loading asset config file from %s: %s", path, e)
 
     def __init__(self, game, yaml_values=None, yaml_file=None):
-        super(AssetManager, self).__init__()
+        super().__init__()
         self.logger = logging.getLogger("game.assets")
         self.game = game
         self.dmd_path = game.dmd_path

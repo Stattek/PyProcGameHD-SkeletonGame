@@ -1,19 +1,19 @@
 __all__ = [
+    "LEDs",
+    "alphanumeric",
+    "assetmanager",
+    "auxport",
     "config",
     "dmd",
     "events",
-    "alphanumeric",
-    "auxport",
     "game",
     "highscore",
     "lamps",
     "modes",
     "service",
     "sound",
-    "util",
     "tools",
-    "LEDs",
-    "assetmanager",
+    "util",
 ]
 
 from _version import __version_info__

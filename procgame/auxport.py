@@ -1,10 +1,10 @@
 import pinproc
 
 
-class AuxPort(object):
+class AuxPort:
 
     def __init__(self, game):
-        super(AuxPort, self).__init__()
+        super().__init__()
 
         self.game = game
         self.commands = []

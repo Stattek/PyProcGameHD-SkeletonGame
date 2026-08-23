@@ -1,7 +1,7 @@
 import pinproc
 
 
-class AlphanumericDisplay(object):
+class AlphanumericDisplay:
     # Start at ASCII table offset 32: ' '
     asciiSegments = [
         0x0000,  # ' '
@@ -20,7 +20,7 @@ class AlphanumericDisplay(object):
         0x0840,  # '-'
         0x8000,  # '.'
         0x4400,  # '/'
-        #
+        # ---
         0x003F,  # '0'
         0x0006,  # '1'
         0x085B,  # '2'
@@ -31,7 +31,7 @@ class AlphanumericDisplay(object):
         0x0007,  # '7'
         0x087F,  # '8'
         0x086F,  # '9'
-        #
+        # ---
         0x0000,  # '1'
         0x0000,  # '1'
         0x0000,  # '1'
@@ -39,7 +39,7 @@ class AlphanumericDisplay(object):
         0x0000,  # '1'
         0x0000,  # '1'
         0x0000,  # '1'
-        #
+        # ---
         0x0877,  # 'A'
         0x2A4F,  # 'B'
         0x0039,  # 'C'
@@ -74,7 +74,7 @@ class AlphanumericDisplay(object):
 
     def __init__(self, aux_controller):
         """Initializes the animation."""
-        super(AlphanumericDisplay, self).__init__()
+        super().__init__()
 
         self.aux_controller = aux_controller
         self.aux_index = aux_controller.get_index()
@@ -85,17 +85,16 @@ class AlphanumericDisplay(object):
 
         # Make sure strings are at least 16 chars.
         # Then convert each string to a list of chars.
-        for j in range(0, 2):
+        for j in range(2):
             input_strings[j] = input_strings[j].upper()
             if len(input_strings[j]) < 16:
                 input_strings[j] += " " * (16 - len(input_strings[j]))
             strings += [list(input_strings[j])]
 
         # Make sure insensities are 1 or less
-        for i in range(0, 16):
-            for j in range(0, 2):
-                if intensities[j][i] > 1:
-                    intensities[j][i] = 1
+        for i in range(16):
+            for j in range(2):
+                intensities[j][i] = min(intensities[j][i], 1)
 
         commands = []
         segs = []
@@ -106,14 +105,14 @@ class AlphanumericDisplay(object):
         segs = [[0] * 16 for i in xrange(2)]
 
         # Loop through each character
-        for i in range(0, 16):
+        for i in range(16):
 
             # Activate the character position (this goes to both displayas)
             commands += [
                 pinproc.aux_command_output_custom(i, 0, self.strobes[0], False, 0)
             ]
 
-            for j in range(0, 2):
+            for j in range(2):
                 segs[j][i] = self.asciiSegments[ord(strings[j][i]) - 32]
 
                 # Check for commas or periods.
