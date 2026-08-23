@@ -2,7 +2,7 @@ from .dmd import *
 from .layers import *
 
 
-class DisplayController(object):
+class DisplayController:
     """Manages the process of obtaining DMD frames from active modes and compositing them together for
     display on the DMD.
 

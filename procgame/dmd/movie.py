@@ -1,19 +1,4 @@
-import os
-import struct
-import yaml
-import sqlite3
-import bz2
-import StringIO
-import time
-from PIL import Image
-from procgame.dmd import Frame
-from procgame.dmd import VgaDMD
-from procgame import config
 import logging
-import re
-import colorsys
-import pygame
-import zipfile
 
 try:
     import cv2
@@ -37,7 +22,7 @@ def getColorProp():
     return cv2.cv.CV_BGR2RGB if not OPCV3 else cv2.COLOR_BGR2RGB
 
 
-class Movie(object):
+class Movie:
     """An ordered collection of :class:`~procgame.dmd.Frame` objects."""
 
     width = None
@@ -50,7 +35,7 @@ class Movie(object):
 
     def __init__(self, filename):
         """Initializes the animation."""
-        super(Movie, self).__init__()
+        super().__init__()
 
         if cv2 is None:
             raise ValueError("MP4 is unavailable as OpenCV is not installed")

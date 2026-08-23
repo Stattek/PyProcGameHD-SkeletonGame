@@ -1,9 +1,11 @@
 #from procgame import *
 # import dmd
-from procgame import config
-from layers import *
-import transitions
 import sys
+
+import transitions
+from layers import *
+
+from procgame import config
 
 DMD_WIDTH = config.value_for_key_path('dmd_dots_w', 480)
 DMD_HEIGHT = config.value_for_key_path('dmd_dots_h', 240) 
@@ -11,7 +13,7 @@ LENGTH_IN_FRAMES = config.value_for_key_path('dmd_framerate', 30)
 
 class moveLayer(Layer):
     def __init__(self,layer=None, start_x=0,start_y=0, target_x=0,target_y=0, lengthInFrames=LENGTH_IN_FRAMES, callback=None, param=None, loop=False, composite_op = 'blacksrc' ):
-        super(moveLayer,self).__init__(False)
+        super().__init__(False)
 
         self.step_number=0
         self.object_layer = layer
@@ -77,7 +79,7 @@ class TransitionLayer(Layer):
     LENGTH_IN_FRAMES = 30
 
     def __init__(self, layerA=None, layerB=None, transitionType=TYPE_PUSH, transitionParameter=None, lengthInFrames=LENGTH_IN_FRAMES,callback = None, width=DMD_WIDTH, height=DMD_HEIGHT):
-        super(TransitionLayer, self).__init__(False)
+        super().__init__(False)
 
         if layerA == None: layerA = FrameLayer(False,Frame(width,height))
         self.layerA = layerA
@@ -157,15 +159,14 @@ class TransitionLayer(Layer):
 class UpdateLayer(Layer):
 
     def __init__(self, callbackFunction = None):
-        super(UpdateLayer, self).__init__(False)
+        super().__init__(False)
         self.callbackFunction = callbackFunction
 
     def next_frame(self):
         if self.callbackFunction:
             self.callbackFunction()
-        return None
     
-class Transition(object):
+class Transition:
 
     # Constants
     TYPE_EXPAND = "ExpandTransition"
@@ -284,7 +285,7 @@ class Transition(object):
             
 class DoubleExpandTransition(transitions.LayerTransitionBase):
     def __init__(self , direction='center'):
-        super(DoubleExpandTransition, self).__init__()
+        super().__init__()
         self.direction = direction
         self.progress_per_frame = 1.0/11.0
         

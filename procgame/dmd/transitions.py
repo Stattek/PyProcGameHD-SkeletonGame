@@ -1,9 +1,10 @@
-from .dmd import *
 import sdl2.ext
 from sdl2.ext import *
 
+from .dmd import *
 
-class LayerTransitionBase(object):
+
+class LayerTransitionBase:
     """Transition base class."""
 
     progress = 0.0
@@ -22,7 +23,7 @@ class LayerTransitionBase(object):
     from `to` to `from`."""
 
     def __init__(self):
-        super(LayerTransitionBase, self).__init__()
+        super().__init__()
 
     def start(self):
         """Start the transition."""
@@ -67,7 +68,7 @@ class LayerTransitionBase(object):
 
 class ExpandTransition(LayerTransitionBase):
     def __init__(self, direction="vertical"):
-        super(ExpandTransition, self).__init__()
+        super().__init__()
         self.direction = direction
         self.progress_per_frame = 1.0 / 11.0
 
@@ -105,7 +106,7 @@ class ExpandTransition(LayerTransitionBase):
 
 class SlideOverTransition(LayerTransitionBase):
     def __init__(self, direction="north"):
-        super(SlideOverTransition, self).__init__()
+        super().__init__()
         self.direction = direction
         self.progress_per_frame = 1.0 / 15.0
 
@@ -137,7 +138,7 @@ class SlideOverTransition(LayerTransitionBase):
 
 class PushTransition(LayerTransitionBase):
     def __init__(self, direction="north"):
-        super(PushTransition, self).__init__()
+        super().__init__()
         self.direction = direction
         self.progress_per_frame = 1.0 / 15.0
 
@@ -183,7 +184,7 @@ class PushTransition(LayerTransitionBase):
 
 class WipeTransition(LayerTransitionBase):
     def __init__(self, direction="north"):
-        super(WipeTransition, self).__init__()
+        super().__init__()
         self.direction = direction
         self.progress_per_frame = 1.0 / 30.0
 
@@ -246,7 +247,7 @@ class WipeTransition(LayerTransitionBase):
 
 class AccordianTransition(LayerTransitionBase):
     def __init__(self, direction="north"):
-        super(AccordianTransition, self).__init__()
+        super().__init__()
         self.direction = direction
         self.progress_per_frame = 1.0 / 15.0
 
@@ -295,7 +296,7 @@ class AccordianTransition(LayerTransitionBase):
 
 class ObscuredWipeTransition(LayerTransitionBase):
     def __init__(self, obscuring_frame, composite_op, direction="north"):
-        super(ObscuredWipeTransition, self).__init__()
+        super().__init__()
         self.composite_op = composite_op
         self.direction = direction
         self.progress_per_frame = 1.0 / 15.0

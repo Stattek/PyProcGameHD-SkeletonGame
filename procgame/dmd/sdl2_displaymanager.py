@@ -28,9 +28,9 @@ except Exception, e:
 
                 sys.exit()
 
-from sdl2.ext.draw import prepare_color
+from sdl2 import SDL_INIT_VIDEO, SDL_Init
 from sdl2.ext.color import convert_to_color
-from sdl2 import SDL_Init, SDL_INIT_VIDEO
+from sdl2.ext.draw import prepare_color
 
 _HASSDLIMAGE = True
 try:
@@ -39,11 +39,10 @@ except ImportError:
     _HASSDLIMAGE = False
 
 import ctypes
-import random
-from sdl2 import endian, hints
 import time
+from ctypes import byref, c_double, c_int
 
-from ctypes import byref, cast, POINTER, c_int, c_float, sizeof, c_uint32, c_double
+from sdl2 import endian
 
 # An SDL2 Display Helper ; Somewhat PyGame like
 
@@ -146,7 +145,7 @@ class FontManagerExtended(sdl2.ext.FontManager):
             self.close()
 
 
-class sdl2_DisplayManager(object):
+class sdl2_DisplayManager:
     def __init__(
         self,
         dots_w,
@@ -953,7 +952,7 @@ class sdl2_DisplayManager(object):
 
         pxbuf = ctypes.cast(rtarget.pixels, ctypes.POINTER(ctypes.c_uint32))
 
-        for idx in range(0, width * height):
+        for idx in range(width * height):
             b_data = bits[idx : idx + 3]
             # print("data: [%s]" % b_data)
             b_num = [ord(b) for b in b_data]
@@ -1010,7 +1009,7 @@ class sdl2_DisplayManager(object):
 
 def loadAnimationFromPNGSeq(factory, file_name_prefix):
     sprite_list = list()
-    for idx in range(0, 14):
+    for idx in range(14):
         name = "%s_%03d.png" % (file_name_prefix, idx)
         print("Loading %s" % name)
         sprite_list.append(factory.from_image(name))

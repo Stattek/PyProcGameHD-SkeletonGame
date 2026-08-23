@@ -1,15 +1,14 @@
-import pinproc
-import time
-import os
-from .sdl2_displaymanager import sdl2_DisplayManager
 import sdl2.ext  # can this be removed MO does not have this
+
 from procgame.dmd import VgaDMD
+
+from .sdl2_displaymanager import sdl2_DisplayManager
 
 # import pygame
 # import pygame.locals
 
 
-class Frame(object):
+class Frame:
     """DMD frame/bitmap."""
 
     width = 0
@@ -280,8 +279,8 @@ class Frame(object):
         height = self.height / num_rows
 
         # Use nested loops to step through each column of each row, creating a new frame at each iteration and copying in the appropriate data.
-        for row_index in range(0, num_rows):
-            for col_index in range(0, num_cols):
+        for row_index in range(num_rows):
+            for col_index in range(num_cols):
                 new_frame = Frame(width, height)
                 Frame.copy_rect(
                     dst=new_frame,
@@ -410,7 +409,7 @@ class Frame(object):
     #       y += 1
 
 
-class Layer(object):
+class Layer:
     """
     The ``Layer`` class is the basis for the pyprocgame display architecture.
     Subclasses override :meth:`next_frame` to provide a frame for the current moment in time.
@@ -444,7 +443,7 @@ class Layer(object):
 
     def __init__(self, opaque=False):
         """Initialize a new Layer object."""
-        super(Layer, self).__init__()
+        super().__init__()
         self.opaque = opaque
         self.set_target_position(0, 0)
         self.blendmode = None
@@ -493,7 +492,7 @@ class Layer(object):
         """Returns an instance of a Frame object to be shown, or None if there is no frame.
         The default implementation returns ``None``; subclasses should implement this method.
         """
-        return None
+        return
 
     def composite_next(self, target):
         """Composites the next frame of this layer onto the given target buffer.
@@ -541,7 +540,6 @@ def main():
     import sdl2
 
     sdl2.SDL_Delay(1000)
-    pass
 
 
 if __name__ == "__main__":

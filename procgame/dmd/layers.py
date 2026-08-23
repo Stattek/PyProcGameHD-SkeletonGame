@@ -1,13 +1,15 @@
-from .dmd import *
-from procgame import config
-from random import randrange
-from . import hdfont
 import logging
 import time
+from random import randrange
+
+from procgame import config
+
+from .dmd import *
 
 try:
     import cv2
     import cv2 as cv
+
     from .movie import capPropId, getColorProp
 
     OpenCV_avail = True
@@ -31,7 +33,7 @@ class FrameLayer(Layer):
     frame_old = None
 
     def __init__(self, opaque=False, frame=None):
-        super(FrameLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.frame = frame
 
     def next_frame(self):
@@ -60,7 +62,7 @@ class ScaledLayer(Layer):
     """
 
     def __init__(self, width, height, content_layer):
-        super(ScaledLayer, self).__init__(content_layer.opaque)
+        super().__init__(content_layer.opaque)
         self.width = width
         self.height = height
         self.content_layer = content_layer
@@ -82,7 +84,7 @@ class ScaledLayer(Layer):
 
 class SolidLayer(Layer):
     def __init__(self, width, height, color, opaque=True):
-        super(SolidLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.frame = Frame(width, height)
         self.frame.fill_rect(0, 0, width, height, color)  # .append(255))
 
@@ -108,7 +110,7 @@ class AnimatedLayer(Layer):
     def __init__(
         self, opaque=False, hold=True, repeat=False, frame_time=1, frames=None
     ):
-        super(AnimatedLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.hold = hold
         self.repeat = repeat
         self.fps = config.value_for_key_path("dmd_framerate", None)
@@ -167,9 +169,9 @@ class AnimatedLayer(Layer):
                         listener()
                     else:
                         listener(arg)
-            elif index >= 0 and self.frame_pointer == index:
-                listener(arg)
-            elif self.frame_pointer == (len(self.frames) + index):
+            elif (index >= 0 and self.frame_pointer == index) or self.frame_pointer == (
+                len(self.frames) + index
+            ):
                 listener(arg)
 
     def next_frame(self):
@@ -267,7 +269,7 @@ class MovieLayer(Layer):
             raise ValueError("MP4 is unavailable as OpenCV is not installed")
         # self.logger = logging.getLogger('movie_layer')
 
-        super(MovieLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.hold = hold
         self.repeat = repeat
 
@@ -281,8 +283,8 @@ class MovieLayer(Layer):
         self.movie = movie
 
         if self.movie.vc is None:
+            # something bad has happened, need to decide how to handle
             raise ValueError("OpenCV failed to handle this movie")
-            pass  # something bad has happened, need to decide how to handle
 
         # print("movie loaded: frame count = %d." % self.movie.frame_count)
 
@@ -322,9 +324,9 @@ class MovieLayer(Layer):
     def notify_frame_listeners(self):
         for frame_listener in self.frame_listeners:
             index, listener = frame_listener
-            if index >= 0 and self.frame_pointer == index:
-                listener()
-            elif self.frame_pointer == (len(self.frames) + index):
+            if (index >= 0 and self.frame_pointer == index) or self.frame_pointer == (
+                len(self.frames) + index
+            ):
                 listener()
 
     def next_frame(self):
@@ -392,7 +394,7 @@ class FrameQueueLayer(Layer):
     def __init__(
         self, opaque=False, hold=True, repeat=False, frame_time=1, frames=None
     ):
-        super(FrameQueueLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.hold = hold
         self.repeat = repeat
         if frames is None:
@@ -438,7 +440,7 @@ class TextLayer(Layer):
         height=None,
         fill_color=None,
     ):
-        super(TextLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.x = x
         self.y = y
         self.width = width
@@ -591,9 +593,7 @@ class AnimatedTextLayer(TextLayer):
         fill_color=None,
         frame_time=1,
     ):
-        super(AnimatedTextLayer, self).__init__(
-            x, y, font, justify, opaque, width, height, fill_color
-        )
+        super().__init__(x, y, font, justify, opaque, width, height, fill_color)
 
         self.frame_time = frame_time  # Number of frames each frame should be displayed for before moving to the next.
         self.frame_time_counter = self.frame_time
@@ -681,7 +681,7 @@ class ScriptedLayer(Layer):
     """
 
     def __init__(self, width, height, script, hold=False, opaque=False):
-        super(ScriptedLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.buffer = Frame(width, height)
         self.script = script
         self.hold = hold
@@ -826,7 +826,7 @@ class ScriptlessLayer(ScriptedLayer):
 
     def __init__(self, width, height, opaque=False):
         script = list()
-        super(ScriptlessLayer, self).__init__(width, height, script, opaque)
+        super().__init__(width, height, script, opaque)
 
     def append(self, layer, seconds=None, callback=None):
         """adds the given layer to the current script, to be displayed for seconds
@@ -845,7 +845,7 @@ class ScriptlessLayer(ScriptedLayer):
 
 class ScoresLayer(ScriptlessLayer):
     def __init__(self, game, fields, fnt, font_style, background, duration):
-        super(ScoresLayer, self).__init__(game.dmd.width, game.dmd.height)
+        super().__init__(game.dmd.width, game.dmd.height)
         self.fields = fields
         self.fnt = fnt
         self.font_style = font_style
@@ -873,7 +873,7 @@ class ScoresLayer(ScriptlessLayer):
         return duration
 
     def reset(self):
-        super(ScoresLayer, self).reset()
+        super().reset()
 
 
 class GroupedLayer(Layer):
@@ -900,7 +900,7 @@ class GroupedLayer(Layer):
             if height is None:
                 height = max([l.get_height() for l in layers])
 
-        super(GroupedLayer, self).__init__(opaque)
+        super().__init__(opaque)
         self.buffer = Frame(width, height)
         self.fill_color = fill_color
         if layers is None:
@@ -958,9 +958,7 @@ class RandomizedLayer(GroupedLayer):
                 "Cannot initialize a RandomizedLayer with no content layers!"
             )
 
-        super(RandomizedLayer, self).__init__(
-            layers[0].width, layers[0].height, layers, layers[0].opaque
-        )
+        super().__init__(layers[0].width, layers[0].height, layers, layers[0].opaque)
         self.layer = None
 
     def reset(self):
@@ -1095,7 +1093,7 @@ class PanningLayer(Layer):
         else:
             self.content_layer = frame
 
-        super(PanningLayer, self).__init__()
+        super().__init__()
 
         self.width = width
         self.height = height
@@ -1299,9 +1297,7 @@ class HDTextLayer(TextLayer):
         fill_color=None,
         fontstyle=None,
     ):
-        super(HDTextLayer, self).__init__(
-            x, y, font, justify, opaque, width, height, fill_color
-        )
+        super().__init__(x, y, font, justify, opaque, width, height, fill_color)
         # self.x = x
         # self.y = y
         # self.width = width
@@ -1569,7 +1565,7 @@ class AnimatedHDTextLayer(Layer):
         height=112,
     ):
 
-        super(AnimatedHDTextLayer, self).__init__()
+        super().__init__()
         self.width = width
         self.height = height
         self.justify = justify
@@ -1793,11 +1789,11 @@ def main():
 
     # import layers
     # from layers import HDTextLayer, TextLayer
-    import time
-    from . import dmd
     import sdl2
-    from procgame.dmd import font, AnimFont, layers
-    import procgame
+
+    from procgame.dmd import AnimFont
+
+    from . import dmd
 
     # from font import *
 
@@ -1809,7 +1805,7 @@ def main():
     )
     self.layer.set_text("Hello!!")
 
-    for i in range(0, 30):
+    for i in range(30):
 
         sdl2.SDL_Delay(33)
 

@@ -1,10 +1,10 @@
 import os
-import animation, dmd
+
 from dmd import Frame
-from procgame import config
-from procgame import util
 from pygame.font import match_font
 from sdl2_displaymanager import sdl2_DisplayManager
+
+from procgame import config
 
 # import pygame
 
@@ -20,7 +20,7 @@ AnchorSW = AnchorS | AnchorW
 AnchorCenter = 0
 
 
-class HDFontStyle(object):
+class HDFontStyle:
     def __init__(
         self,
         interior_color=(155, 155, 255),
@@ -28,14 +28,14 @@ class HDFontStyle(object):
         line_color=(132, 32, 132),
         fill_color=None,
     ):
-        super(HDFontStyle, self).__init__()
+        super().__init__()
         self.line_color = line_color
         self.line_width = line_width
         self.interior_color = interior_color
         self.fill_color = fill_color
 
 
-class HDFont(object):
+class HDFont:
     """Object wrapper for a PyGame font.
 
     Fonts can be loaded manually, using :meth:`load`, or with the :func:`font_named` utility function
@@ -55,7 +55,7 @@ class HDFont(object):
     pygFont = None
 
     def __init__(self, fontname, size, bold=False, font_file_path=None):
-        super(HDFont, self).__init__()
+        super().__init__()
         # init pyg
 
         # pygame.font.init()
@@ -71,7 +71,7 @@ class HDFont(object):
                 color=None,
                 bgcolor=None,
             )
-        except Exception as e:
+        except Exception:
             raise ValueError(
                 "Specific font '%s' could not be found on your system or in path '%s' Please install/verify."
                 % (fontname, font_file_path)
@@ -356,27 +356,17 @@ def main():
     if len(sys.argv) <= 1:
         show_commandline_help()
 
-    import font
-    from font import Font
-    import layers
-    from layers import HDTextLayer, TextLayer
     import time
+
     import sdl2
 
     t0 = time.clock()
     import ctypes
     from ctypes import (
-        byref,
-        cast,
-        POINTER,
         c_int,
-        c_float,
-        sizeof,
-        c_uint32,
-        c_double,
-        c_voidp,
         c_void_p,
     )
+
     from sdl2 import endian
 
     exp_font_name = sys.argv[1]

@@ -1,8 +1,7 @@
-import Image
-import procgame.dmd
-import colorsys
 from dmd import Frame
 from sdl2_displaymanager import *
+
+import procgame.dmd
 
 # import pygame
 

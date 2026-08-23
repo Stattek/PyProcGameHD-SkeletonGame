@@ -1,9 +1,10 @@
+import csv
 import os
+
+from procgame import config, util
+
 from .animation import Animation
 from .dmd import Frame
-from procgame import config
-from procgame import util
-import csv
 
 # Anchor values are used by Font.draw_in_rect():
 AnchorN = 1
@@ -17,7 +18,7 @@ AnchorSW = AnchorS | AnchorW
 AnchorCenter = 0
 
 
-class Font(object):
+class Font:
     """Variable-width bitmap font.
 
     Fonts can be loaded manually, using :meth:`load`, or with the :func:`font_named` utility function
@@ -35,7 +36,7 @@ class Font(object):
     """Composite operation used by :meth:`draw` when calling :meth:`~pinproc.DMDBuffer.copy_rect`."""
 
     def __init__(self, filename=None, char_widths=None):
-        super(Font, self).__init__()
+        super().__init__()
         self.__anim = Animation()
         self.char_size = None
         self.bitmap = None
@@ -201,7 +202,7 @@ class AnimFont(Font):
     current = 0
 
     def __init__(self, filename=None):
-        super(AnimFont, self).__init__()
+        super().__init__()
         self.frames = list()
         self.current = 0
         self.__anim = Animation()
@@ -373,7 +374,7 @@ def init_font_path():
                 % (config.path, type(value))
             )
             sys.exit(1)
-    except ValueError as e:
+    except ValueError:
         # print e
         pass
 

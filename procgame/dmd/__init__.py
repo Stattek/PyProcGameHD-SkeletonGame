@@ -1,28 +1,28 @@
 __all__ = [
-    "vgadmd",
     "Font",
     "animation",
-    "displaycontroller",
-    "hddisplaycontroller",
-    "dmd",
     "animfont",
-    "layers",
+    "displaycontroller",
+    "dmd",
+    "hddisplaycontroller",
     "hdfont",
+    "layers",
     "markup",
-    "transitions",
-    "transitionlayer",
     "movie",
+    "transitionlayer",
+    "transitions",
+    "vgadmd",
 ]
-from .vgadmd import *
-from .dmd import *
 from .animation import *
-from .font import *
-from .layers import *
-from .hdfont import *
-from .markup import *
-from .transitions import *
-from .transitionlayer import *
-from .displaycontroller import *
-from .hddisplaycontroller import *
-from .movie import *
 from .animfont import *
+from .displaycontroller import *
+from .dmd import *
+from .font import *
+from .hddisplaycontroller import *
+from .hdfont import *
+from .layers import *
+from .markup import *
+from .movie import *
+from .transitionlayer import *
+from .transitions import *
+from .vgadmd import *

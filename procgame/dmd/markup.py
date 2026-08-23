@@ -1,4 +1,4 @@
-from procgame.dmd import Frame, font_named
+from procgame.dmd import Frame
 
 
 class MarkupFrameGenerator:

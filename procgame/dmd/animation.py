@@ -1,29 +1,29 @@
-import os
-import struct
-import yaml
-import sqlite3
 import bz2
-from io import StringIO
+import os
+import sqlite3
+import struct
 import time
+from io import StringIO
+
 from PIL import Image
 
 # simple work-around to support PIL or PILLOW
 if not hasattr(Image.Image, "tobytes"):
     Image.Image.tobytes = Image.Image.tostring
-from . import dmd
-from .dmd import Frame
-from .sdl2_displaymanager import sdl2_DisplayManager
-from procgame import config
 import logging
 import re
-import colorsys
 import zipfile
+
+from procgame import config
+
+from .dmd import Frame
+from .sdl2_displaymanager import sdl2_DisplayManager
 
 # import pygame
 # from pygame import movie
 try:
     import cv2
-    import cv2.cv as cv
+    from cv2 import cv
 
     OpenCV_avail = True
 except ImportError:
@@ -35,7 +35,7 @@ shared_cache_manager = None
 warned_cache_disabled = False
 
 
-class AnimationCacheManager(object):
+class AnimationCacheManager:
     def __init__(self, path):
         self.path = os.path.expanduser(path)
         if not os.path.exists(self.path):
@@ -130,7 +130,7 @@ class AnimationCacheManager(object):
         self.conn.commit()
 
 
-class Animation(object):
+class Animation:
     """An ordered collection of :class:`~procgame.dmd.Frame` objects."""
 
     width = None
@@ -142,7 +142,7 @@ class Animation(object):
 
     def __init__(self):
         """Initializes the animation."""
-        super(Animation, self).__init__()
+        super().__init__()
         self.frames = []
 
     def load(self, filename, allow_cache=True):

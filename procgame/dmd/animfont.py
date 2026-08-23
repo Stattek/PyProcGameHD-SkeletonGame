@@ -1,8 +1,7 @@
 import os
+
 from animation import Animation
 from dmd import Frame
-from procgame import config
-from procgame import util
 from font import Font
 
 
@@ -18,7 +17,7 @@ class AnimFont(Font):
     current = 0
 
     def __init__(self, filename=None):
-        super(AnimFont, self).__init__()
+        super().__init__()
         self.frames = list()
         self.current = 0
         self.__anim = Animation()
