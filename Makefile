@@ -14,12 +14,7 @@ help::
 
 COMPILE_FILENAME:=$(LINT_DIR)/skeletongame_lint_$(shell date "+%s").log
 # all files we want to lint
-LINT_FILES:=./*.py \
-			./SampleGame/*/*.py \
-			./procgame/*/*.py \
-			./tests/*/*.py \
-			./tools/*/*.py
-
+LINT_FILES:=$(shell fd --type f "\.py" .)
 lint-compile: $(LINT_DIR)
 	@python -m compileall $(LINT_FILES) 2>&1 > $(COMPILE_FILENAME) || echo "Errors found: check file $(COMPILE_FILENAME)"
 
