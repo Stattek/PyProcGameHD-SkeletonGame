@@ -5,6 +5,7 @@ from paver.easy import *  # for sh()
 def test():
     """Run unit tests."""
     import unittest
+
     import tests
 
     suite = unittest.defaultTestLoader.loadTestsFromModule(tests)
