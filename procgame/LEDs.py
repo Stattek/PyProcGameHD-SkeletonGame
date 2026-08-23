@@ -472,14 +472,12 @@ class Playlist:
             # time - sec this entry runs
             # trigger_show
         }
-        self.step_actions = [
-            # The actions for the steps in the playlist
-            # step_num
-            # show
-            # num_repeats
-            # tocks_per_sec
-            # blend
-        ]
+        self.step_actions = []  # The actions for the steps in the playlist
+        # step_num
+        # show
+        # num_repeats
+        # tocks_per_sec
+        # blend
         self.steps = []  # list of values of steps, like [1,2,3,5,10]
         self.current_step_position = 0
         self.repeat = False
