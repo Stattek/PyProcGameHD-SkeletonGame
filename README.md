@@ -13,8 +13,8 @@ to write to create a new game with 'typical components' (via SkeletonGame).
 The code, documentation, and this page itself are a work
 in progress.  Please bear with me.  Please report bugs,
 issues, problems, etc.  Either use the GitHub issue tracker,
-or go to the thread on the PinballControllers forum,
-[here](http://www.pinballcontrollers.com/forum/index.php?topic=1500.0).
+or go to the thread on the [PinballControllers
+forum](http://www.pinballcontrollers.com/forum/index.php?topic=1500.0).
 
 Thank you.
 
