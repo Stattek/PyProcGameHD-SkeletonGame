@@ -3,6 +3,7 @@
 import logging
 import re
 import time
+
 from .game.mode import Mode
 
 
@@ -50,17 +51,17 @@ def expand_line(str):
     """Expands special characters ``<>[]`` within *str* and returns the dots-and-spaces representation.
     Used by :class:`LampShowTrack`.
     """
-    str = re.sub("(\[[\- ]*\])", lambda m: "." * len(m.group(1)), str)
-    str = re.sub("(\<[\- ]*\])", lambda m: fade_in(len(m.group(1)))[:-1] + ".", str)
-    str = re.sub("(\[[\- ]*\>)", lambda m: "." + fade_out(len(m.group(1)))[1:], str)
-    str = re.sub("(\<[\- ]*\>)", lambda m: fade_fade(len(m.group(1))), str)
+    str = re.sub(r"(\[[\- ]*\])", lambda m: "." * len(m.group(1)), str)
+    str = re.sub(r"(\<[\- ]*\])", lambda m: fade_in(len(m.group(1)))[:-1] + ".", str)
+    str = re.sub(r"(\[[\- ]*\>)", lambda m: "." + fade_out(len(m.group(1)))[1:], str)
+    str = re.sub(r"(\<[\- ]*\>)", lambda m: fade_fade(len(m.group(1))), str)
     return str
 
 
 # End of Pattern functions
 
 
-class LampShowTrack(object):
+class LampShowTrack:
     """A series of schedules to be applied to a driver over a period of time, usually in concert with other tracks
     to make up a :class:`LampShow`.
 
@@ -129,11 +130,11 @@ class LampShowTrack(object):
     """The :class:`~procgame.game.Driver` correspopnding to this track."""
 
     def __init__(self, line):
-        super(LampShowTrack, self).__init__()
+        super().__init__()
         self.load_from_line(line)
 
     def load_from_line(self, line):
-        line_re = re.compile("(?P<name>\S+)\s*\| (?P<data>.*)$")
+        line_re = re.compile(r"(?P<name>\S+)\s*\| (?P<data>.*)$")
         m = line_re.match(line)
         if m is None:
             raise ValueError("Regexp didn't match on track line: " + line)
@@ -194,12 +195,12 @@ class LampShowTrack(object):
         return self.current_index >= len(self.schedules)
 
 
-class LampShow(object):
+class LampShow:
     """Manages loading and playing a lamp show consisting of several lamps (or other drivers),
     each of which is a track (:class:`LampShowTrack`, to be precise)."""
 
     def __init__(self, game):
-        super(LampShow, self).__init__()
+        super().__init__()
         self.game = game
         self.reset()
 
@@ -225,7 +226,7 @@ class LampShow(object):
         See :class:`LampShowTrack` for a complete description of the track line format.
         """
         f = open(filename, "r")
-        for line in f.readlines():
+        for line in f:
             if line[0] != "#":
                 self.tracks.append(LampShowTrack(line))
 
@@ -266,7 +267,7 @@ class LampShowMode(Mode):
     """
 
     def __init__(self, game):
-        super(LampShowMode, self).__init__(game, 3)
+        super().__init__(game, 3)
         self.lampshow = LampShow(self.game)
         self.show_over = True
         self.logger = logging.getLogger("game.lamps")
@@ -297,7 +298,7 @@ class LampShowMode(Mode):
             self.lampshow.tick()
 
 
-class LampController(object):
+class LampController:
     """Controller object that encapsulates a :class:`LampShow` and helps to restore lamp drivers to their prior state."""
 
     shows = {}

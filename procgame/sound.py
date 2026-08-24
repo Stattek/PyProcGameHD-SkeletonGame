@@ -6,13 +6,11 @@
 #
 # authors: Josh Kugler, Michael Ocean
 #
-import random
-import time
 import logging
-from traceback import format_exc
-from procgame.game import mode
+import random
 from collections import deque
-from math import ceil
+
+from procgame.game import mode
 
 try:
     logging.getLogger("game.sound").info("Initializing sound...")
@@ -76,7 +74,7 @@ class SoundController(
     enabled = True
 
     def __init__(self, game, priority=10):
-        super(SoundController, self).__init__(game, priority)
+        super().__init__(game, priority)
         self.logger = logging.getLogger("game.sound")
         try:
             mixer.pre_init(
@@ -538,7 +536,7 @@ class SoundController(
         if tag == "all":
             self.queue.clear()
         else:
-            for x in range(0, len(self.queue)):
+            for x in range(len(self.queue)):
                 item = self.queue.popleft()
                 if item["tag"] != tag:
                     self.queue.append(item)
@@ -690,7 +688,6 @@ class SoundController(
     def beep(self):
         if not self.enabled:
             return
-        pass
         #   self.play('chime')
 
 
@@ -745,7 +742,7 @@ def testcase():
 
         g.run_loop()
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         print("=============FATAL==================")
