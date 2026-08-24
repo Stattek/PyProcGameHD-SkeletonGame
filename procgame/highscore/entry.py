@@ -1,6 +1,5 @@
-import math
-from ..game import Mode
 from .. import dmd
+from ..game import Mode
 
 
 class InitialEntryMode(Mode):
@@ -25,7 +24,7 @@ class InitialEntryMode(Mode):
     letters_font = None
 
     def __init__(self, game, priority, left_text, right_text, entered_handler):
-        super(InitialEntryMode, self).__init__(game, priority)
+        super().__init__(game, priority)
 
         self.entered_handler = entered_handler
 

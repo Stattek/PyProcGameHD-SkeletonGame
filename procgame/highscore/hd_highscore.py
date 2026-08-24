@@ -57,9 +57,9 @@
 # Enjoy..?
 
 
-import math
-from procgame.game import Mode
 from procgame import dmd
+from procgame.game import Mode
+
 # from procgame import highscore
 
 class HD_InitialEntryMode_ML(Mode):
@@ -95,7 +95,7 @@ class HD_InitialEntryMode_ML(Mode):
     letters_font = None
     
     def __init__(self, game, priority, left_text, right_text, entered_handler):
-        super(HD_InitialEntryMode_ML, self).__init__(game, priority)
+        super().__init__(game, priority)
         
         self.entered_handler = entered_handler
         
@@ -479,7 +479,6 @@ class HD_InitialEntryMode_ML_old(Mode):
 # You likely need to change this...
 
 def main():
-    import pinproc
 
     # add the directory one level up to the path and switch to it
     import os

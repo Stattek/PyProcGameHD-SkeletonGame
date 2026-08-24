@@ -1,7 +1,7 @@
 import time
 
-from .entry import *
 from ..game import Mode
+from .entry import *
 
 
 class EntryPrompt:
@@ -33,7 +33,6 @@ class HighScoreLogic:
 
     def store_initials(self, key, inits):
         """Called by :class:`EntrySequenceManager` to store the entered initials."""
-        pass
 
 
 class HighScore:

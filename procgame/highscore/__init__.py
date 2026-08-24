@@ -1,13 +1,12 @@
-__all__ = ["category", "entry", "sequence", "HD_InitialEntryMode"]
+__all__ = ["HD_InitialEntryMode", "category", "entry", "sequence"]
 
 import locale
 
+from .. import dmd
 from .category import *
 from .entry import *
-from .sequence import *
 from .hd_initialentry import *
-
-from .. import dmd
+from .sequence import *
 
 
 def generate_highscore_frames(categories, width, height):
