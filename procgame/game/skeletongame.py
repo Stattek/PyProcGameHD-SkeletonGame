@@ -16,50 +16,43 @@
 #
 ##########################
 
-from . import GameController
-from . import BasicGame
-from . import Player
-from .advancedmode import AdvancedMode
-from ..dmd import HDDisplayController, font_named, sdl2_DisplayManager
-from ..dmd.layers import SolidLayer, GroupedLayer
-from ..modes import ScoreDisplay, ScoreDisplayHD
-from ..modes import Trough, ballsave, BallSearch
-from ..modes import osc
-from ..modes import DMDHelper, SwitchMonitor
-from ..modes import bonusmode, service, Attract, TiltMonitorMode, Tilted
-
-# from ..modes import serviceHD
-
-from .. import sound
-from .. import config
-from .. import auxport
-from .. import alphanumeric
-from .. import lamps
-from .. import assetmanager
-from .. import highscore
-import pinproc
-import time
-import datetime
-import traceback
-import inspect
-
-import pygame
-from pygame import mixer
-import time
-import pinproc
-import os
-import logging
 import locale
+import logging
+import os
 import random
-import re
+import time
+import traceback
 import weakref
+
+import pinproc
+import pygame
 import yaml
-from procgame.yaml_helper import value_for_key
 
 # from weakref import WeakValueDictionary
-
 from game import config_named
+
 from procgame.modes.rgbshow import RgbShowPlayer
+from procgame.yaml_helper import value_for_key
+
+# from ..modes import serviceHD
+from .. import assetmanager, config, highscore, lamps, sound
+from ..dmd import HDDisplayController
+from ..modes import (
+    Attract,
+    BallSearch,
+    DMDHelper,
+    ScoreDisplay,
+    ScoreDisplayHD,
+    SwitchMonitor,
+    TiltMonitorMode,
+    Trough,
+    ballsave,
+    bonusmode,
+    osc,
+    service,
+)
+from . import BasicGame, Player
+from .advancedmode import AdvancedMode
 
 try:
     # Mac/Linux version
@@ -83,7 +76,6 @@ def cleanup():
 
 
 def run_proc_game(game_class):
-    import sys
 
     game = None
     exc_info = None
@@ -139,7 +131,7 @@ class SkeletonGame(BasicGame):
                 )
 
             # try:
-            super(SkeletonGame, self).__init__(machine_type)
+            super().__init__(machine_type)
             # except IOError, e:
             #     self.log("Error connecting to P-ROC -- running virtual mode")
             #     config.values['pinproc_class'] = 'procgame.fakepinproc.FakePinPROC'
@@ -496,7 +488,6 @@ class SkeletonGame(BasicGame):
 
     def cleanup(self):
         """stub incase subclass doesn't provide an implementation"""
-        pass
 
     def end_run_loop(self):
         if (
@@ -506,7 +497,7 @@ class SkeletonGame(BasicGame):
             if hasattr(self, "cleanup"):
                 self.logger.info("calling cleanup")
                 self.cleanup()
-            super(SkeletonGame, self).end_run_loop()
+            super().end_run_loop()
             self.cleaned_up = True
         else:
             pass
@@ -945,7 +936,7 @@ class SkeletonGame(BasicGame):
         self.switchmonitor.cancel_delayed(name="notifyNextMode")
         self.event = None
 
-        super(SkeletonGame, self).reset()
+        super().reset()
 
         self.ball_search_tries = 0
 
@@ -1041,7 +1032,7 @@ class SkeletonGame(BasicGame):
 
     def process_config(self):
         """Called by :meth:`load_config` and :meth:`load_config_stream` to process the values in :attr:`config`."""
-        super(SkeletonGame, self).process_config()
+        super().process_config()
 
         # if ('arduino' in self.config['PRGame'] and self.config['PRGame']['arduino'] != False) :
         #     comport = self.config['PRGame']['arduino']
@@ -1100,18 +1091,18 @@ class SkeletonGame(BasicGame):
     def save_settings(self, filename=None):
         if filename is None:
             filename = "game_user_settings.yaml"
-        super(SkeletonGame, self).save_settings(os.path.join("config/" + filename))
+        super().save_settings(os.path.join("config/" + filename))
 
     def save_game_data(self, filename):
-        super(SkeletonGame, self).save_game_data(os.path.join("config/" + filename))
+        super().save_game_data(os.path.join("config/" + filename))
 
     def load_game_data(self, file_default, file_game):
-        super(SkeletonGame, self).load_game_data(
+        super().load_game_data(
             os.path.join("config/" + file_default), os.path.join("config/" + file_game)
         )
 
     def load_settings(self, file_default, file_game):
-        return super(SkeletonGame, self).load_settings(
+        return super().load_settings(
             os.path.join("config/" + file_default), os.path.join("config/" + file_game)
         )
 
@@ -1172,7 +1163,7 @@ class SkeletonGame(BasicGame):
         )
 
     def actually_start_ball(self):
-        super(SkeletonGame, self).ball_starting()
+        super().ball_starting()
 
         # eject a ball into the shooter lane
         self.trough.launch_balls(1)
@@ -1280,7 +1271,7 @@ class SkeletonGame(BasicGame):
 
     def add_player(self):
         """add another player (even if there are too many); fires evt_player_added to notify modes that care"""
-        player = super(SkeletonGame, self).add_player()
+        player = super().add_player()
         self.quickNotifyModes(
             "evt_player_added",
             args=(player),
@@ -1378,7 +1369,7 @@ class SkeletonGame(BasicGame):
         if self.use_ballsearch_mode:
             self.ball_search.disable()  # possibly redundant if ball ends normally, but not redundant when slam tilted
 
-        super(SkeletonGame, self).ball_ended()
+        super().ball_ended()
         for m in self.known_modes[AdvancedMode.Ball]:
             self.modes.remove(m())
 
@@ -1453,7 +1444,7 @@ class SkeletonGame(BasicGame):
         # remove attract mode
         self.modes.remove(self.attract_mode)
 
-        super(SkeletonGame, self).game_started()
+        super().game_started()
 
         for m in self.known_modes[AdvancedMode.Game]:
             self.modes.add(m())
@@ -1481,7 +1472,7 @@ class SkeletonGame(BasicGame):
         # ball time is handled in ball drained callback
 
         # Also handle game stats.
-        for i in range(0, len(self.players)):
+        for i in range(len(self.players)):
             game_time = self.get_game_time(i)
             self.game_data["Audits"]["Avg Game Time"] = self.calc_time_average_string(
                 self.game_data["Audits"]["Games Played"],
@@ -1505,7 +1496,7 @@ class SkeletonGame(BasicGame):
         )
 
     def game_ended(self):
-        super(SkeletonGame, self).game_ended()
+        super().game_ended()
         self.disableAllLamps()
 
         # remove Game-duration modes
@@ -1630,7 +1621,7 @@ class SkeletonGame(BasicGame):
 
     def run_loop(self, min_seconds_per_cycle=None):
         # sdl2_DisplayManager.inst().show_window(True)
-        super(SkeletonGame, self).run_loop(min_seconds_per_cycle)
+        super().run_loop(min_seconds_per_cycle)
 
     def do_ball_search(self, silent=False):
         self.ball_search_tries += 1
@@ -1639,11 +1630,11 @@ class SkeletonGame(BasicGame):
             self.notifyModes("evt_balls_missing", args=None, event_complete_fn=None)
 
 
-class SGEvent(object):
+class SGEvent:
     """An object to hold an SGEvent; useful if multiple events come in at a time"""
 
     def __init__(self, event_name, evt_args, on_complete_fn, only_active_modes):
-        super(SGEvent, self).__init__()
+        super().__init__()
         self.name = event_name
         self.args = evt_args
         self.on_complete_fn = on_complete_fn
@@ -1665,7 +1656,7 @@ class AdvPlayer(Player):
     """ the information about bonuses awarded to the player on this ball (or held over) """
 
     def __init__(self, name):
-        super(AdvPlayer, self).__init__(name)
+        super().__init__(name)
 
         self.bonuses = BonusRecord()
 
@@ -1697,7 +1688,7 @@ class AdvPlayer(Player):
         return self.state_tracking.get(key, default)
 
 
-class BonusRecord(object):
+class BonusRecord:
     """represents a list of the bonuses awarded to the player, as well as
     all possible bonuses, their display order (in ball_end animation)
     and the bonus types (award: once, many, max); this is used by the
@@ -1784,7 +1775,7 @@ class BonusRecord(object):
             values = yaml.load(open(bonus_def_file, "r"))
         except yaml.scanner.ScannerError as e:
             raise e
-        except Exception as e:
+        except Exception:
             values = dict()
 
         if "BonusDefs" in values:

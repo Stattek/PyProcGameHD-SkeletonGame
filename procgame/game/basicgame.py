@@ -1,13 +1,12 @@
-from . import GameController
-from ..dmd import DisplayController, font_named
-from ..modes import ScoreDisplay
-from .. import config
-from .. import auxport
-from .. import alphanumeric
-import pinproc
-import time
 import datetime
+import time
 import traceback
+
+import pinproc
+
+from .. import alphanumeric, auxport, config
+from ..dmd import DisplayController
+from . import GameController
 
 
 class BasicGame(GameController):
@@ -37,12 +36,11 @@ class BasicGame(GameController):
         # pygame will be loaded.
         use_desktop = config.value_for_key_path(keypath="use_desktop", default=True)
         if use_desktop:
-            import procgame.desktop
             from ..desktop import Desktop
 
             self.desktop = Desktop()
 
-        super(BasicGame, self).__init__(machine_type)
+        super().__init__(machine_type)
 
         self.aux_port = auxport.AuxPort(self)
         if self.machine_type == pinproc.MachineTypeWPCAlphanumeric:
@@ -59,7 +57,7 @@ class BasicGame(GameController):
             self.dmd.frame_handlers.append(self.set_last_frame)
 
     def load_config(self, path):
-        super(BasicGame, self).load_config(path)
+        super().load_config(path)
 
         # Setup the key mappings from the config.yaml.
         # We used to do this in __init__, but at that time the
@@ -74,9 +72,7 @@ class BasicGame(GameController):
                     switch_number = self.switches[switch_name].number
                 else:
                     switch_number = pinproc.decode(self.machine_type, switch_name)
-                if type(k) != int:  # letter keys are added as letters (obv)
-                    self.desktop.add_key_map(ord(str(k)), switch_number)
-                elif k < 10:  # 0-9 as keys
+                if type(k) != int or k < 10:  # letter keys are added as letters (obv)
                     self.desktop.add_key_map(ord(str(k)), switch_number)
                 else:  # numbers used as bindings for specials -- examples below
                     self.desktop.add_key_map(k, switch_number)
@@ -87,7 +83,7 @@ class BasicGame(GameController):
 
     def reset(self):
         """Calls super's reset and adds the :class:`ScoreDisplay` mode to the mode queue."""
-        super(BasicGame, self).reset()
+        super().reset()
         # self.modes.add(self.score_display)
 
     def dmd_event(self):
@@ -97,7 +93,7 @@ class BasicGame(GameController):
 
     def get_events(self):
         """Overriding GameController's implementation in order to append keyboard events."""
-        events = super(BasicGame, self).get_events()
+        events = super().get_events()
         if self.desktop:
             events.extend(self.desktop.get_keyboard_events())
         return events
@@ -106,7 +102,7 @@ class BasicGame(GameController):
         """Called once per run loop.
 
         Displays the last-received DMD frame on the desktop."""
-        super(BasicGame, self).tick()
+        super().tick()
         self.show_last_frame()
 
     def score(self, points):
@@ -147,7 +143,7 @@ class BasicRecordableGame(BasicGame):
     _is_currently_recording = False
 
     def __init__(self, machine_type):
-        super(BasicRecordableGame, self).__init__(machine_type)
+        super().__init__(machine_type)
 
         # Mark down our start time so we get relative simulator timestamps when recording events
         self._start_time = time.time() * 1000
@@ -256,7 +252,7 @@ class BasicRecordableGame(BasicGame):
         close the file.
         """
         try:
-            super(BasicRecordableGame, self).run_loop(min_seconds_per_cycle)
+            super().run_loop(min_seconds_per_cycle)
         except Exception as e:
             print(e)
             print(traceback.format_exc())

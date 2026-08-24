@@ -2,7 +2,7 @@ import logging
 import time
 
 
-class AttrCollection(object):
+class AttrCollection:
     """A collection of :class:`procgame.game.GameItem` objects."""
 
     def __init__(self, name):
@@ -80,7 +80,7 @@ class AttrCollection(object):
         return l[0]
 
 
-class GameItem(object):
+class GameItem:
     """Base class for :class:`Driver` and :class:`Switch`.  Contained in an instance of :class:`AttrCollection` within the :class:`GameController`."""
 
     game = None
@@ -132,13 +132,11 @@ class Driver(GameItem):
             self.logger.debug(
                 "set_color failed for Driver %s - is NOT wsRGB" % self.name
             )
-        pass
 
     def restore_default_color(self):
         self.logger.debug(
             "restore_color failed for Driver %s - is NOT wsRGB" % self.name
         )
-        pass
 
     def disable(self):
         """Disables (turns off) this driver."""
@@ -375,7 +373,7 @@ class VirtualDriver(Driver):
     """Function to be called when the driver needs to change state."""
 
     def __init__(self, game, name, number, polarity):
-        super(VirtualDriver, self).__init__(game, name, number)
+        super().__init__(game, name, number)
 
         self.state = {
             "polarity": polarity,
@@ -492,7 +490,7 @@ class VirtualDriver(Driver):
         )
 
 
-class Player(object):
+class Player:
     """Represents a player in the game.
     The game maintains a collection of players in :attr:`GameController.players`."""
 
@@ -509,5 +507,5 @@ class Player(object):
     """Number of seconds that this player has had the ball in play."""
 
     def __init__(self, name):
-        super(Player, self).__init__()
+        super().__init__()
         self.name = name

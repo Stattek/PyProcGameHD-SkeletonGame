@@ -1,6 +1,5 @@
 import logging
 import re
-import time
 
 import pinproc
 
@@ -11,7 +10,7 @@ proc_pdb_bus_addr = 0xC00
 PDLEDs = []
 
 
-class PDLED(object):
+class PDLED:
     def __init__(self, proc, board_addr):
         self.proc = proc
         self.board_addr = board_addr
@@ -298,7 +297,7 @@ class LED(GameItem):
             return color
 
 
-class Switch(object):
+class Switch:
     def __init__(self, pdb, number_str):
         upper_str = number_str.upper()
         if upper_str.startswith("SD"):
@@ -319,7 +318,7 @@ class Switch(object):
         return 32 + int(cr_list[0]) * 16 + int(cr_list[1])
 
 
-class Coil(object):
+class Coil:
     def __init__(self, pdb, number_str):
         self.pdb = pdb
         upper_str = number_str.upper()
@@ -359,7 +358,7 @@ class Coil(object):
         return is_pdb_address(string, self.pdb.aliases)
 
 
-class Lamp(object):
+class Lamp:
     def __init__(self, pdb, number_str):
         self.pdb = pdb
         upper_str = number_str.upper()
@@ -415,12 +414,12 @@ class Lamp(object):
         # Input is of form C-Ax-By-z:R-Ax-By-z  or  C-x/y/z:R-x/y/z  or  aliasX:aliasY
         # We want to return only the address part: Ax-By-z, x/y/z, or aliasX.  That is, remove the two character prefix if present.
         addrs = string.rsplit(":")
-        if len(addrs) is not 2:
+        if len(addrs) != 2:
             return []
         addrs_out = []
         for addr in addrs:
             bits = addr.split("-")
-            if len(bits) is 1:
+            if len(bits) == 1:
                 addrs_out.append(addr)  # Append unchanged.
             else:  # Generally this will be len(bits) 2 or 4.
                 addrs_out.append("-".join(bits[1:]))  # Remove the first bit and rejoin.
@@ -437,7 +436,7 @@ class Lamp(object):
         return True
 
 
-class PDBConfig(object):
+class PDBConfig:
     indexes = []
     proc = None
     aliases = None  # set in __init__
@@ -518,7 +517,7 @@ class PDBConfig(object):
         self.initialize_drivers(proc)
 
         # Set up dedicated driver groups (groups 0-3).
-        for group_ctr in range(0, 4):
+        for group_ctr in range(4):
             # TODO: Fix this.  PDB Banks 0-3 are also interpreted as dedicated bank here.
             enable = group_ctr in coil_bank_list
             self.logger.info(
@@ -612,7 +611,7 @@ class PDBConfig(object):
 
     def initialize_drivers(self, proc):
         # Loop through all of the drivers, initializing them with the polarity.
-        for i in range(0, 208):
+        for i in range(208):
             state = {
                 "driverNum": i,
                 "outputDriveTime": 0,
@@ -730,7 +729,7 @@ class PDBConfig(object):
             return num
 
 
-class DriverAlias(object):
+class DriverAlias:
     def __init__(self, key, value):
         self.expr = re.compile(key)
         self.repl = value

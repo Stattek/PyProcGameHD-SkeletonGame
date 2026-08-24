@@ -1,19 +1,16 @@
-import os
-import sys
-import Queue
-import time
 import copy
 import logging
+import os
+import time
 
 import pinproc
 import yaml
+
+from procgame import LEDs, config, util
+
 from .gameitems import *
 from .mode import *
-from .pdb import PDBConfig, LED
-
-from procgame import config
-from procgame import util
-from procgame import LEDs
+from .pdb import LED, PDBConfig
 
 
 def config_named(name):
@@ -31,7 +28,7 @@ def config_named(name):
     return yaml.load(open(name, "r"))
 
 
-class GameController(object):
+class GameController:
     """Core object representing the game itself.
     Usually a game developer will create a new game by subclassing this class.
     Consider subclassing :class:`BasicGame` instead, as it makes use of several helpful modes
@@ -84,7 +81,7 @@ class GameController(object):
     LEDs = None
 
     def __init__(self, machine_type):
-        super(GameController, self).__init__()
+        super().__init__()
         self.logger = logging.getLogger("game")
         self.machine_type = pinproc.normalize_machine_type(machine_type)
         self.proc = self.create_pinproc()
@@ -171,7 +168,6 @@ class GameController(object):
 
     def ball_ended(self):
         """Called by the game framework when the current ball has ended."""
-        pass
 
     def end_ball(self):
         """Called by the implementor to notify the game that the current ball has ended."""
@@ -209,7 +205,6 @@ class GameController(object):
 
     def game_ended(self):
         """Called by the GameController when the current game has ended."""
-        pass
 
     def end_game(self):
         """Called by the implementor to mark notify the game that the game has ended."""
@@ -222,11 +217,9 @@ class GameController(object):
 
     def dmd_event(self):
         """Called by the GameController when a DMD event has been received."""
-        pass
 
     def tick(self):
         """Called by the GameController once per run loop."""
-        pass
 
     def load_config(self, filename):
         """Reads the YAML machine configuration file into memory.

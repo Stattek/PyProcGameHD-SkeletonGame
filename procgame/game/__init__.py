@@ -5,9 +5,9 @@ __all__ = [
     "AdvancedMode",
     "skeletongame",
 ]
+from .advancedmode import *
+from .basicgame import *
 from .game import *
 from .gameitems import *
-from .basicgame import *
 from .mode import *
-from .advancedmode import *
 from .skeletongame import *

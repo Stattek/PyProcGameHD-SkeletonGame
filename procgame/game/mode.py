@@ -9,7 +9,7 @@ SwitchStop = True
 SwitchContinue = False
 
 
-class Mode(object):
+class Mode:
     """Abstraction of a game mode to be subclassed by the game
     programmer.
 
@@ -58,7 +58,7 @@ class Mode(object):
     )
 
     def __init__(self, game, priority):
-        super(Mode, self).__init__()
+        super().__init__()
         self.game = game
         self.priority = priority
         self.__accepted_switches = []
@@ -301,11 +301,9 @@ class Mode(object):
 
         This method should not be invoked directly; it is called by the GameController run loop.
         """
-        pass
 
     def mode_tick(self):
         """Called by the GameController run loop during each loop when the mode is running."""
-        pass
 
     def dispatch_delayed(self):
         """Called by the GameController to dispatch any delayed events."""
@@ -363,7 +361,6 @@ class Mode(object):
 
     def update_lamps(self):
         """Called by the GameController re-apply active lamp schedules"""
-        pass
 
     # Data structure used by the __accepted_switches array:
     class AcceptedSwitch:
@@ -412,14 +409,14 @@ class Mode(object):
             )
 
 
-class ModeQueue(object):
+class ModeQueue:
     """A queue of modes which dispatches switch events."""
 
     changed = False
     """True if the contents of the queue has changed since the last time this variable was set to False."""
 
     def __init__(self, game):
-        super(ModeQueue, self).__init__()
+        super().__init__()
         self.game = game
         self.modes = []
         self.logger = logging.getLogger("game.modes")
@@ -512,8 +509,7 @@ def tabularize(rows, col_spacing=2):
         while len(row) > len(max_column_widths):
             max_column_widths.append(0)
         for index, col in enumerate(row):
-            if len(col) > max_column_widths[index]:
-                max_column_widths[index] = len(col)
+            max_column_widths[index] = max(max_column_widths[index], len(col))
     # Now that we have the column widths, create the individual lines:
     output = []
     for row in rows:
