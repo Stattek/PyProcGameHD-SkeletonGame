@@ -1,10 +1,11 @@
+import logging
 import os
-import procgame.dmd
-import procgame.game
-import Image
 import struct
 
-import logging
+import Image
+
+import procgame.dmd
+import procgame.game
 
 logging.basicConfig(
     level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"

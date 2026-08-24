@@ -16,7 +16,7 @@ def save_config():
         output = file(procgame.config.path, "w")
         yaml.dump(procgame.config.values, output)
         del output
-    except IOError:
+    except OSError:
         print("Error writing to configuration file at " + procgame.config.path)
         sys.exit(2)
 
@@ -108,9 +108,9 @@ def tool_run(options, args):
 
     # If nothing else, show the file location and some diagnostic information:
     print("""Your configuration file is located at:""")
-    print("")
+    print()
     print("""  %s""" % (procgame.config.path))
-    print("")
+    print()
 
     if not os.path.exists(procgame.config.path):
         print("Your configuration file does not exist.")

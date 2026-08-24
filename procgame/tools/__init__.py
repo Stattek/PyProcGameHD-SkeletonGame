@@ -2,8 +2,8 @@ __all__ = [
     "tools",
 ]
 
-import yaml as _yaml
 import pinproc as _pinproc
+import yaml as _yaml
 
 
 def machine_type_from_yaml(config_path):

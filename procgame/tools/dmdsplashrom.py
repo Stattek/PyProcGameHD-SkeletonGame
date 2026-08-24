@@ -1,12 +1,12 @@
-import time
 import bz2
-import logging
 import json
-
+import logging
+import time
 from io import StringIO
 
-from .mailbox.mailboxclient import MailboxClient
 from procgame import dmd
+
+from .mailbox.mailboxclient import MailboxClient
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -21,7 +21,7 @@ PORT = 80
 # PORT = 8084
 
 
-class JobSubmitter(object):
+class JobSubmitter:
     def __init__(self, host, port, api_key):
         self.logger = logging.getLogger("worker")
         self.client = MailboxClient(host, port, api_key)

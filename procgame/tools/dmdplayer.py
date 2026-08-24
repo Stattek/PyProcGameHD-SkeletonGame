@@ -2,9 +2,9 @@ import logging
 
 import pinproc
 
-import procgame.game
 import procgame.dmd
 import procgame.dmd.font
+import procgame.game
 
 logging.basicConfig(
     level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -16,7 +16,7 @@ class PlayerGame(procgame.game.BasicGame):
     anim_layer = None
 
     def __init__(self, machine_type, width=128, height=32):
-        super(PlayerGame, self).__init__(machine_type)
+        super().__init__(machine_type)
         f = procgame.dmd.font_named("Font07x5.dmd")
         self.dmd = procgame.dmd.DisplayController(
             self, width=width, height=height, message_font=f

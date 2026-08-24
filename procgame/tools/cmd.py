@@ -1,6 +1,7 @@
 import optparse
 import os
 import sys
+
 import procgame
 
 commands = {
@@ -28,9 +29,7 @@ def main():
 
     show_help = False
 
-    if len(sys.argv) <= 1:
-        show_help = True
-    elif not sys.argv[1] in commands.keys():
+    if len(sys.argv) <= 1 or not sys.argv[1] in commands:
         show_help = True
 
     if show_help:
@@ -38,7 +37,7 @@ def main():
             """Usage: %s <command> <arg0> <arg1> ... <argN>"""
             % (os.path.basename(sys.argv[0]))
         )
-        print("")
+        print()
         print("Commands:")
         for name in sorted(commands.keys()):
             print("  % -16s  %s" % (name, commands[name]))

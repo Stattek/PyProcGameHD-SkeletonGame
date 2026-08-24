@@ -7,15 +7,15 @@
 #  prompt to save to the .dmd file and exit the program.
 #
 import sys
+
 import pinproc
 
-from procgame import game
-from procgame import dmd
+from procgame import dmd, game
 
 
 class DmdFontWidthsGame(game.BasicGame):
     def __init__(self, font, font_path, text):
-        super(DmdFontWidthsGame, self).__init__(pinproc.MachineTypeCustom)
+        super().__init__(pinproc.MachineTypeCustom)
         self.reset()
         w = 128
         h = 32

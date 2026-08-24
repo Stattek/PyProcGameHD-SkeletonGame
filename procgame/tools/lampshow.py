@@ -13,7 +13,7 @@ class LampGame(procgame.game.GameController):
     show_mtime = None
 
     def __init__(self, machine_type):
-        super(LampGame, self).__init__(machine_type)
+        super().__init__(machine_type)
         self.lampctrl = procgame.lamps.LampController(game=self)
 
     def play(self, filename):
@@ -21,7 +21,7 @@ class LampGame(procgame.game.GameController):
         self.show_mtime = None
 
     def tick(self):
-        super(LampGame, self).tick()
+        super().tick()
         mtime = os.path.getmtime(self.show_filename)
         if self.show_mtime != mtime:
             logging.getLogger("").info("Loading lamp show at %s.", self.show_filename)

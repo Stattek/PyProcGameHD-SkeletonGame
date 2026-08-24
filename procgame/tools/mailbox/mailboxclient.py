@@ -1,8 +1,8 @@
-import sys
 import json  # note: requires Python 2.6
+import sys
 import urllib.parse
-
 from http.client import HTTPConnection
+
 from .clientutil import encode_multipart_formdata
 
 
