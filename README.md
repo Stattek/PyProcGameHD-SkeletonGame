@@ -14,11 +14,13 @@ The code, documentation, and this page itself are a work
 in progress.  Please bear with me.  Please report bugs,
 issues, problems, etc.  Either use the GitHub issue tracker,
 or go to the thread on the [PinballControllers
-forum](http://www.pinballcontrollers.com/forum/index.php?topic=1500.0).
+forum](http://www.pinballcontrollers.com/forum/index.php?topic=1500.0)
+(TODO: link out of date).
 
 Thank you.
 
 ![screenshot](https://dl.dropboxusercontent.com/u/254844/pyprocgamehd.png)
+(TODO: link out of date)
 
 Please see the [Official PyProcGameHD/SkeletonGame
 website](http://www.pinballprogramming.com/) site for the all-in-one
