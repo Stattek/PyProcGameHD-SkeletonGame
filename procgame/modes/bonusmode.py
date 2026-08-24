@@ -21,10 +21,7 @@ class BonusMode(AdvancedMode):
 
         # a call to 'super' call's the parent object's __init__ method
         # in this case, it calls the procgame.game.Mode's init()
-        super().__init__(
-            game=game, priority=1, mode_type=AdvancedMode.Ball
-        )
-
+        super().__init__(game=game, priority=1, mode_type=AdvancedMode.Ball)
 
     """
   the mode_started method is called whenever this mode is added
@@ -153,4 +150,3 @@ class BonusMode(AdvancedMode):
 
         self.game.displayText("End of Ball", opaque=True)
         return 2
-
