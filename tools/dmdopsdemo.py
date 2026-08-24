@@ -3,8 +3,9 @@ import sys
 sys.path.append(
     sys.path[0] + "/.."
 )  # Set the path so we can find procgame.  We are assuming (stupidly?) that the first member is our directory.
-from procgame import *
 import time
+
+from procgame import *
 
 # dmdopsdemo.py demonstrates how to use Layer.composite_op.
 
@@ -13,7 +14,7 @@ class Game(game.BasicGame):
     """Very simple game to get our DMD running."""
 
     def __init__(self, machine_type):
-        super(Game, self).__init__(machine_type)
+        super().__init__(machine_type)
         self.dmd = dmd.DisplayController(self, width=128, height=32)
         self.frame_count = 0
 

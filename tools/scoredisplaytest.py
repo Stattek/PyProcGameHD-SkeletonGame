@@ -3,10 +3,12 @@ import sys
 sys.path.append(
     sys.path[0] + "/.."
 )  # Set the path so we can find procgame.  We are assuming (stupidly?) that the first member is our directory.
-import pinproc
-from procgame import *
-import random
 import locale
+import random
+
+import pinproc
+
+from procgame import *
 
 locale.setlocale(locale.LC_ALL, "")  # Used to put commas in the score.
 
@@ -52,7 +54,7 @@ class TestGame(game.BasicGame):
         self.start_ball()
 
     def reset(self):
-        super(TestGame, self).reset()
+        super().reset()
         self.modes.add(ScoreTester(self, 5))
         # Make sure flippers are off, especially for user-initiated resets.
         self.enable_flippers(enable=False)

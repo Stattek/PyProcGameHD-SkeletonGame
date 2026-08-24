@@ -4,6 +4,7 @@ sys.path.append(
     sys.path[0] + "/.."
 )  # Set the path so we can find procgame.  We are assuming (stupidly?) that the first member is our directory.
 import pinproc
+
 from procgame import *
 
 # dmdfont.py Displays the given text on the DMD with the given text.

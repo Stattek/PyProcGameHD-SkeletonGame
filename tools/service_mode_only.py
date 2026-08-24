@@ -3,11 +3,13 @@ import sys
 sys.path.append(
     sys.path[0] + "/.."
 )  # Set the path so we can find procgame.  We are assuming (stupidly?) that the first member is our directory.
+import locale
+from random import *
+
+import yaml
+
 import procgame
 from procgame import *
-from random import *
-import locale
-import yaml
 
 locale.setlocale(locale.LC_ALL, "")  # Used to put commas in the score.
 
@@ -27,7 +29,7 @@ class Attract(game.Mode):
     """docstring for AttractMode"""
 
     def __init__(self, game):
-        super(Attract, self).__init__(game, 1)
+        super().__init__(game, 1)
         self.press_start = dmd.TextLayer(128 / 2, 7, font_jazz18, "center").set_text(
             "Press Enter"
         )
@@ -60,7 +62,7 @@ class Attract(game.Mode):
                 lamp.pulse(0)
 
         lamp_schedules = []
-        for i in range(0, 32):
+        for i in range(32):
             lamp_schedules.append(0xFFFF0000 >> i)
             if i > 16:
                 lamp_schedules[i] = (
@@ -113,11 +115,11 @@ print("Initializing sound...")
 from pygame import mixer  # This call takes a while.
 
 
-class SoundController(object):
+class SoundController:
     """docstring for TestGame"""
 
     def __init__(self, delegate):
-        super(SoundController, self).__init__()
+        super().__init__()
         mixer.init()
         self.sounds = {}
         self.music = {}
@@ -172,7 +174,7 @@ class TestGame(game.BasicGame):
     """docstring for TestGame"""
 
     def __init__(self, machine_type):
-        super(TestGame, self).__init__(machine_type)
+        super().__init__(machine_type)
         self.sound = SoundController(self)
         self.dmd = dmd.DisplayController(
             self, width=128, height=32, message_font=font_tiny7
@@ -203,23 +205,23 @@ class TestGame(game.BasicGame):
         self.disable_popperL = 0
 
     def reset(self):
-        super(TestGame, self).reset()
+        super().reset()
         self.modes.add(self.attract_mode)
         # Make sure flippers are off, especially for user initiated resets.
         self.enable_flippers(enable=False)
 
     def ball_starting(self):
-        super(TestGame, self).ball_starting()
+        super().ball_starting()
 
     def ball_ended(self):
-        super(TestGame, self).ball_ended()
+        super().ball_ended()
 
     def game_ended(self):
-        super(TestGame, self).game_ended()
+        super().game_ended()
         self.modes.add(self.attract_mode)
         self.deadworld.mode_stopped()
         # for mode in copy.copy(self.modes.modes):
-        # 	self.modes.remove(mode)
+        #     self.modes.remove(mode)
         # self.reset()
         self.set_status("Game Over")
 

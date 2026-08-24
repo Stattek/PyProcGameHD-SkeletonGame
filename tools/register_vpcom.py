@@ -6,12 +6,13 @@ sys.path.append(
 )  # Set the path so we can find procgame.  We are assuming (stupidly?) that the first member is our directory.
 # from procgame import fakepinproc
 import pinproc
-import win32com
 import pythoncom
-import win32com.server.util
-from win32com.server.util import wrap
 import thread
+import win32com
+import win32com.server.util
 import yaml
+from win32com.server.util import wrap
+
 from procgame import *
 
 
@@ -137,7 +138,7 @@ class Controller:
 
         # Initialize switches.  Call SetSwitch so it can invert
         # normally closed switches as appropriate.
-        for i in range(0, 120):
+        for i in range(120):
             self.SetSwitch(i, False)
         thread.start_new_thread(self.game.run_loop, ())
 
@@ -267,7 +268,7 @@ class Controller:
 
         already = False
         if len(self.last_coil_states) > 0:
-            for i in range(0, len(coils)):
+            for i in range(len(coils)):
                 if coils[i] != self.last_coil_states[i]:
                     if not already:
                         changedCoils += [(0, True)]
@@ -283,7 +284,7 @@ class Controller:
         changedLamps = []
 
         if len(self.last_lamp_states) > 0:
-            for i in range(0, len(lamps)):
+            for i in range(len(lamps)):
                 if lamps[i] != self.last_lamp_states[i]:
                     changedLamps += [(i, lamps[i])]
 
@@ -296,7 +297,7 @@ class Controller:
         changedGI = []
 
         if len(self.last_gi_states) > 0:
-            for i in range(0, len(gi)):
+            for i in range(len(gi)):
                 if gi[i] != self.last_gi_states[i]:
                     changedGI += [(i, gi[i])]
 
@@ -307,7 +308,7 @@ class Controller:
         """Gets the current state of the GI strings."""
         vpgi = [False] * 5
 
-        for i in range(0, 5):
+        for i in range(5):
             numStr = "G0" + str(i + 1)
             prNumber = pinproc.decode(self.game.machine_type, numStr)
             vpgi[i] = self.game.proc.drivers[prNumber].curr_state
@@ -318,7 +319,7 @@ class Controller:
         """Gets the current state of the lamps."""
         vplamps = [False] * 90
 
-        for i in range(0, 64):
+        for i in range(64):
             vpNum = (((i / 8) + 1) * 10) + (i % 8) + 1
             vplamps[vpNum] = self.game.proc.drivers[i + 80].curr_state
 
@@ -330,7 +331,7 @@ class Controller:
         pycoils = self.game.proc.drivers
         vpcoils = [False] * 64
 
-        for i in range(0, len(vpcoils)):
+        for i in range(len(vpcoils)):
             if i <= 28:
                 vpcoils[i] = pycoils[i + 39].curr_state
             elif i < 33:

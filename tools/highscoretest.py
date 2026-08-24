@@ -66,7 +66,7 @@ class TestGame(game.BasicGame):
     highscore_categories = None
 
     def __init__(self, machine_type):
-        super(TestGame, self).__init__(machine_type)
+        super().__init__(machine_type)
 
     def setup(self):
         self.load_config(config_path)
@@ -101,7 +101,7 @@ class TestGame(game.BasicGame):
         self.reset()
 
     def reset(self):
-        super(TestGame, self).reset()
+        super().reset()
         self.modes.add(BaseGameMode(game=self, priority=1))
         self.modes.add(BallEnder(game=self, priority=1))
         # Make sure flippers are off, especially for user initiated resets.

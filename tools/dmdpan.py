@@ -12,7 +12,7 @@ class Game(game.BasicGame):
     """Very simple game to get our DMD running."""
 
     def __init__(self, machine_type):
-        super(Game, self).__init__(machine_type)
+        super().__init__(machine_type)
 
     def pan(self, frame, origin, translate):
         mode = game.Mode(self, 9)
