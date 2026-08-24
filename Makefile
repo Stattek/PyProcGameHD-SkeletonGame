@@ -29,13 +29,13 @@ help::
 	@echo "    lint-ruff - checks codebase using ruff"
 
 RUFF_FILENAME:=$(LINT_DIR)/ruff_lint_$(shell date "+%s").log
-lint-ruff:
+lint-ruff: $(LINT_DIR)
 	@ruff check $(LINT_FILES) 2>&1 > $(RUFF_FILENAME) || echo "errors found: check file $(RUFF_FILENAME)"
 
 
 help::
-	@echo "    lint-ruff - Checks codebase using ruff and applies fixes to files with issues. Use sparingly."
-lint-ruff-apply-fixes:
+	@echo "    lint-ruff - Checks codebase using ruff and applies fixes to files with issues. Use sparingly. All changes must be reviewed."
+lint-ruff-apply-fixes: $(LINT_DIR)
 	@ruff check --fix $(LINT_FILES) 2>&1 > $(RUFF_FILENAME) || echo "Errors found: check file $(RUFF_FILENAME)"
 
 
@@ -43,8 +43,8 @@ help::
 	@echo "    lint-pylint - checks codebase using pylint"
 
 PYLINT_FILENAME:=$(LINT_DIR)/pylint_lint_$(shell date "+%s").log
-lint-pylint:
-	@pylint $(LINT_FILES) 2>&1 > $(PYLINT_FILENAME) || echo "Errors found: check file $(PYLINT_FILENAME)"
+lint-pylint: $(LINT_DIR)
+	@pylint --errors-only $(LINT_FILES) 2>&1 > $(PYLINT_FILENAME) || echo "Errors found: check file $(PYLINT_FILENAME)"
 
 
 help::
