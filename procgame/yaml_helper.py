@@ -1,6 +1,3 @@
-import yaml
-
-
 def value_for_key(data, keypath, default=None, exception_on_miss=False):
     """Returns the value at the given *keypath* within :attr:`values`.
 

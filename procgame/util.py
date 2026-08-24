@@ -36,7 +36,7 @@ class const:
         self.__dict__[attr] = value
 
 
-class BlackHole(object):
+class BlackHole:
     def __init__(self, *args):
         pass
 
