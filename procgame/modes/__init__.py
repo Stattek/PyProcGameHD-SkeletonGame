@@ -12,27 +12,26 @@ __all__ = [
     "switchmonitor",
     "rgbshow",
 ]
+from ..game import Mode
+from .attract import *
 from .ballsave import *
 from .ballsearch import *
+from .dmdhelper import *
 from .drops import *
+from .osc import *
 from .replay import *
+from .rgbshow import *
 from .score_display import *
 from .score_display_hd import *
-from .trough import *
 from .service import *
-from .osc import *
-from .dmdhelper import *
-from .attract import *
-from .tilt import *
 from .switchmonitor import *
-from .rgbshow import *
-
-from ..game import Mode
+from .tilt import *
+from .trough import *
 
 
 class TransitionOutHelperMode(Mode):
     def __init__(self, game, priority, transition, layer):
-        super(TransitionOutHelperMode, self).__init__(game=game, priority=priority)
+        super().__init__(game=game, priority=priority)
         self.layer = layer
         self.layer.transition = transition
         self.layer.transition.in_out = "out"
@@ -53,7 +52,7 @@ class SwitchSequenceRecognizer(Mode):
     switch_log = []
 
     def __init__(self, game, priority):
-        super(SwitchSequenceRecognizer, self).__init__(game=game, priority=priority)
+        super().__init__(game=game, priority=priority)
         self.switches = {}
         self.switch_log = []
 

@@ -1,18 +1,15 @@
 ### A new playback engine for playing RGB based
 ### lampshows.
 #######
-import re
 import logging
-import sys
-from procgame.game import Mode
+import re
+
 from procgame.game.advancedmode import AdvancedMode
 
 
 class RgbShowPlayer(AdvancedMode):
     def __init__(self, game, priority=3):
-        super(RgbShowPlayer, self).__init__(
-            game, priority, mode_type=AdvancedMode.System
-        )
+        super().__init__(game, priority, mode_type=AdvancedMode.System)
         self.logger = logging.getLogger("RgbShowPlayer")
         self.shows = {}
         self.active_shows = []
@@ -124,7 +121,6 @@ class RgbShowPlayer(AdvancedMode):
                     "Not restoring state for device '%s' because it's still in use elsewhere"
                     % device.name
                 )
-                pass
             elif device.name in self.prior_lamp_states:
                 # self.logger.info("restoring state for device '%s'" %  device.name)
                 r = self.prior_lamp_states[device.name]
@@ -166,14 +162,13 @@ class RgbShowPlayer(AdvancedMode):
                 self.logger.info("all shows done, calling update lamps")
                 self.game.update_lamps()
             # show is done
-            pass
 
     def reset(self):
         # TODO: ???
         pass
 
 
-class RgbShow(object):
+class RgbShow:
     def __init__(self, game, key, filename):
         self.logger = logging.getLogger("rgbShow")
         self.logger.info("loading RgbShow '%s'" % filename)
@@ -193,7 +188,7 @@ class RgbShow(object):
         self.shows_over = False
 
         f = open(filename, "r")
-        for line in f.readlines():
+        for line in f:
             if line.lstrip().startswith("#") or line.lstrip().rstrip() == "":
                 # comment or blank line, ignore
                 pass
@@ -223,15 +218,12 @@ class RgbShow(object):
                     v = t[t.find("=") + 1 :].lstrip().rstrip()
                     if k == "time":
                         self.time = int(v)
-                        pass
                     elif k == "repeat":
                         tmp = v.lower()
                         self.repeat = tmp == "true" or tmp == "1"
-                        pass
                     elif k == "hold":
                         tmp = v.lower()
                         self.hold = tmp == "true" or tmp == "1"
-                        pass
                     else:
                         raise ValueError(
                             "Could not parse RgbShow header line: '%s'" % line
@@ -239,7 +231,6 @@ class RgbShow(object):
                 else:
                     # bad line!
                     raise ValueError("Could not parse RgbShow header line: '%s'" % line)
-                pass
             else:
                 # track data
                 t = RgbTrack(line, self.color_map, self)
@@ -319,7 +310,7 @@ class RgbShow(object):
         self.callback_param = callback_param
 
 
-class RgbTrack(object):
+class RgbTrack:
     def __str__(self):
         return "".join([str(t) + ":" + str(v) + ";" for t, v in enumerate(self.data)])
 
@@ -345,7 +336,7 @@ class RgbTrack(object):
         self.enabled = True  # a track may be disabled if it's device is in use by another playing show
 
         # print line
-        line_re = re.compile("\s*(?P<type>\S+\:)?\s*(?P<name>\S+)\s*\| (?P<data>.*)$")
+        line_re = re.compile(r"\s*(?P<type>\S+\:)?\s*(?P<name>\S+)\s*\| (?P<data>.*)$")
 
         m = line_re.match(line)
         if m is None:
@@ -433,7 +424,7 @@ class RgbTrack(object):
         self.length = len(data)
 
 
-class RgbCommand(object):
+class RgbCommand:
     def __init__(self, name, fn, new_color, transition_time):
         self.new_color = new_color
         self.time = transition_time

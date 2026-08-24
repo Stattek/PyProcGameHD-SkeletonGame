@@ -1,5 +1,6 @@
-from ..game import Mode
 import logging
+
+from ..game import Mode
 
 
 class BallSave(Mode):
@@ -14,7 +15,7 @@ class BallSave(Mode):
 
     # TODO: delayed_start_switch should be `str | None`. It is very silly to use a 'None' string when there is already a type you can use
     def __init__(self, game, lamp, delayed_start_switch="None"):
-        super(BallSave, self).__init__(game, 3)
+        super().__init__(game, 3)
         self.logger = logging.getLogger("ballsave")
         self.lamp = lamp
         self.num_balls_to_save = 1
@@ -125,8 +126,7 @@ class BallSave(Mode):
         self.tick_rate = tick_rate
         self.allow_multiple_saves = allow_multiple_saves
         self.num_balls_to_save = num_balls_to_save
-        if time > self.timer:
-            self.timer = time
+        self.timer = max(self.timer, time)
         self.update_lamps()
         if now:
             self.cancel_delayed("ball_save_timer")

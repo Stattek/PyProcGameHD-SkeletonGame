@@ -1,24 +1,23 @@
-import pinproc
-import struct
-import time
-import os
 import locale
+import os
+
+import yaml
+
 from procgame import dmd
 from procgame.game import Mode
 from procgame.yaml_helper import value_for_key
-import yaml
 
 
 class ScoreLayer(dmd.GroupedLayer):
     def __init__(self, width, height, mode):
-        super(ScoreLayer, self).__init__(width, height, mode)
+        super().__init__(width, height, mode)
         self.mode = mode
 
     def next_frame(self):
         """docstring for next_frame"""
         # Setup for the frame.
         self.mode.update_layer()
-        return super(ScoreLayer, self).next_frame()
+        return super().next_frame()
 
 
 class ScoreDisplay(Mode):
@@ -65,7 +64,7 @@ class ScoreDisplay(Mode):
     scoreMuted = False
 
     def __init__(self, game, priority, left_players_justify="left"):
-        super(ScoreDisplay, self).__init__(game, priority)
+        super().__init__(game, priority)
 
         yaml_file = "config/score_display.yaml"
 
@@ -257,7 +256,6 @@ class ScoreDisplay(Mode):
                     fill_color=None,
                 )
             )
-        pass
 
     def reset(self):
         """call this when the machine is reset to also reset
@@ -392,7 +390,7 @@ class ScoreDisplay(Mode):
 
         # self.layer.layers += [layer]
 
-        for i in range(0, 4):
+        for i in range(4):
             self.score_layer_player[i].enabled = False
 
     def update_layer_4p(self):
@@ -450,8 +448,6 @@ class ScoreDisplay(Mode):
         for i in range(i + 1, 4):
             self.score_layer_player[i].enabled = False
 
-        pass
-
     def mute_score(self, muted):
         self.scoreMuted = muted
 
@@ -464,7 +460,7 @@ class ScoreDisplay(Mode):
 
 class FreePoints(Mode):
     def __init__(self, game, priority):
-        super(FreePoints, self).__init__(game, priority)
+        super().__init__(game, priority)
 
     def give_points(self):
         for i in xrange(0, len(self.game.players)):
@@ -482,10 +478,8 @@ class FreePoints(Mode):
 
 
 def main():
-    import pinproc
 
     # add the directory one level up to the path and switch to it
-    import os
     import sys
 
     sys.path.insert(1, os.path.join(sys.path[0], ".."))
@@ -514,4 +508,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

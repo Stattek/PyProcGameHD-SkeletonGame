@@ -1,5 +1,6 @@
-from ..game import Mode, SwitchContinue
 import logging
+
+from ..game import Mode, SwitchContinue
 
 
 class Trough(Mode):
@@ -56,7 +57,7 @@ class Trough(Mode):
         autoplunge_settle_time=0.3,
         trough_settle_time=0.5,
     ):
-        super(Trough, self).__init__(game, 90)
+        super().__init__(game, 90)
         self.logger = logging.getLogger("trough")
 
         self.position_switchnames = position_switchnames

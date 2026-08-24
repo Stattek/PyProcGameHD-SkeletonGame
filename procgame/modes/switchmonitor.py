@@ -1,16 +1,14 @@
-import logging
+from procgame.game import SwitchContinue, SwitchStop
 
-from ..game import Mode
-from procgame.game import SwitchStop, SwitchContinue
 from .. import highscore
+from ..game import Mode
 
 
 class SwitchMonitor(Mode):
     """A mode that monitors for specific switches and helps advance state as appropriate"""
-    
+
     def __init__(self, game):
-        super(SwitchMonitor, self).__init__(game=game, priority=32767)
-        pass
+        super().__init__(game=game, priority=32767)
 
     # Enter service mode when the enter button is pushed.
     def sw_enter_active(self, sw):
@@ -21,7 +19,7 @@ class SwitchMonitor(Mode):
         return SwitchContinue
 
     def sw_startButton_active_for_2s(self, sw):
-        if(self.game.ball > 1):
+        if self.game.ball > 1:
             self.game.reset()
 
     def sw_startButton_active(self, sw):
@@ -29,8 +27,8 @@ class SwitchMonitor(Mode):
             if isinstance(m, highscore.HD_EntrySequenceManager):
                 return SwitchContinue
 
-        if(self.game.attract_mode in self.game.modes):
-            # Initialize game   
+        if self.game.attract_mode in self.game.modes:
+            # Initialize game
             self.game.start_game()
             # Start_game takes care of adding the first player and starting a ball in SkelGame
         else:
@@ -41,8 +39,10 @@ class SwitchMonitor(Mode):
                 self.game.logger.info("switchmonitor: Start pressed after ball 1")
             else:
                 # either in ball search mode or ball 2 maybe?  Either way ignore!
-                self.game.logger.info("switchmonitor: Start pressed, no players, no attract??  Ball search??")
-                #self.game.start_game()
+                self.game.logger.info(
+                    "switchmonitor: Start pressed, no players, no attract??  Ball search??"
+                )
+                # self.game.start_game()
         return SwitchStop
 
     def sw_down_closed(self, sw):
@@ -64,4 +64,3 @@ class SwitchMonitor(Mode):
     # def sw_coinDoor_inactive_for_1s(self,sw):
     #     # enable coils
     #     pass
-

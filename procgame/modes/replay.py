@@ -5,7 +5,7 @@ class Replay(Mode):
     """docstring for AttractMode"""
 
     def __init__(self, game, priority):
-        super(Replay, self).__init__(game, priority)
+        super().__init__(game, priority)
         self.replay_achieved = [False, False, False, False]
         self.replay_scores = [500000, 600000, 700000, 800000]
         self.num_replay_levels = 1
@@ -33,13 +33,13 @@ class Replay(Mode):
         # TODO: this is silly
         replay_on = self.replay_type != "none"
         score = self.game.current_player().score
-        for i in range(0, 4):
+        for i in range(4):
             # Set already achieved if replay is off, level not active, or
             # score is higher
             self.replay_achieved[i] = (
                 not replay_on or self.num_levels <= i or score > self.replay_scores[i]
             )
-        for i in range(0, 4):
+        for i in range(4):
             # Schedule the score check if any level hasn't been achieved yet.
             if not self.replay_achieved[i]:
                 self.delay(
@@ -57,10 +57,9 @@ class Replay(Mode):
     def set_replay_scores(self):
         if self.replay_type == "auto":
             self.replay_scores[0] = self.calc_auto_replay_score()
-            if self.replay_scores[0] < self.default_scores[0]:
-                self.replay_scores[0] = self.default_scores[0]
+            self.replay_scores[0] = max(self.replay_scores[0], self.default_scores[0])
         elif self.replay_type == "fixed":
-            for i in range(0, 4):
+            for i in range(4):
                 self.replay_scores[i] = self.default_scores[i]
         elif self.replay_type == "incremental":
             self.replay_scores[0] = self.default_scores[0]
@@ -81,7 +80,7 @@ class Replay(Mode):
 
     def replay_check(self):
         index = 3
-        for i in range(0, 4):
+        for i in range(4):
             if not self.replay_achieved[i]:
                 index = i
                 break

@@ -1,6 +1,6 @@
-from ..game import Mode
-from .. import dmd
 import logging
+
+from ..game import Mode
 
 
 class BallSearch(Mode):
@@ -25,7 +25,7 @@ class BallSearch(Mode):
         self.enabled = 0
         self.completion_handler = None
         self.stop_switch_check_functions = list()
-        super(BallSearch, self).__init__(game, 8)
+        super().__init__(game, 8)
 
         for switch in reset_switches:
             self.add_switch_handler(

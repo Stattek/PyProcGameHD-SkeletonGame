@@ -1,4 +1,4 @@
-from .dmd.layers import TextLayer, GroupedLayer
+from .dmd.layers import GroupedLayer, TextLayer
 from .game.mode import Mode
 
 
@@ -6,7 +6,7 @@ class ServiceModeSkeleton(Mode):
     """Service Mode List base class."""
 
     def __init__(self, game, priority, font):
-        super(ServiceModeSkeleton, self).__init__(game, priority)
+        super().__init__(game, priority)
         self.name = ""
         self.title_layer = TextLayer(1, 1, font, "left")
         self.item_layer = TextLayer(128 / 2, 12, font, "center")
@@ -40,11 +40,11 @@ class ServiceModeList(ServiceModeSkeleton):
     """Service Mode List base class."""
 
     def __init__(self, game, priority, font):
-        super(ServiceModeList, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         self.items = []
 
     def mode_started(self):
-        super(ServiceModeList, self).mode_started()
+        super().mode_started()
 
         self.iterator = 0
         self.change_item()
@@ -92,7 +92,7 @@ class ServiceMode(ServiceModeList):
     """Service Mode."""
 
     def __init__(self, game, priority, font, extra_tests=[]):
-        super(ServiceMode, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         # self.title_layer.set_text('Service Mode')
         self.name = "Service Mode"
         self.tests = Tests(self.game, self.priority + 1, font, extra_tests)
@@ -108,7 +108,7 @@ class Tests(ServiceModeList):
     """Service Mode."""
 
     def __init__(self, game, priority, font, extra_tests=[]):
-        super(Tests, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         # self.title_layer.set_text('Tests')
         self.name = "Tests"
         self.lamp_test = LampTest(self.game, self.priority + 1, font)
@@ -123,12 +123,12 @@ class LampTest(ServiceModeList):
     """Lamp Test"""
 
     def __init__(self, game, priority, font):
-        super(LampTest, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         self.name = "Lamp Test"
         self.items = self.game.lamps
 
     def change_item(self):
-        super(LampTest, self).change_item()
+        super().change_item()
         self.item.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=True)
 
     def sw_enter_active(self, sw):
@@ -139,14 +139,14 @@ class CoilTest(ServiceModeList):
     """Coil Test"""
 
     def __init__(self, game, priority, font):
-        super(CoilTest, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         self.name = "Coil Test"
         self.title_layer.set_text("Coil Test - Enter btn: mode")
         self.instruction_layer.set_text("Pulse with start button")
         self.items = self.game.coils
 
     def mode_started(self):
-        super(CoilTest, self).mode_started()
+        super().mode_started()
         self.action = "manual"
         if self.game.lamps.has_key("startButton"):
             self.game.lamps.startButton.schedule(
@@ -184,7 +184,7 @@ class SwitchTest(ServiceModeSkeleton):
     """Switch Test"""
 
     def __init__(self, game, priority, font):
-        super(SwitchTest, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         self.name = "Switch Test"
         for switch in self.game.switches:
             if self.game.machine_type == "sternWhitestar":
@@ -221,7 +221,7 @@ class Statistics(ServiceModeList):
     """Service Mode."""
 
     def __init__(self, game, priority, font, name, itemlist):
-        super(Statistics, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         # self.title_layer.set_text('Settings')
         self.name = name
         self.items = []
@@ -237,7 +237,7 @@ class StatsDisplay(ServiceModeList):
     """Coil Test"""
 
     def __init__(self, game, priority, font, name, itemlist):
-        super(StatsDisplay, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         self.name = name
         self.value_layer = TextLayer(128 / 2, 22, font, "center")
         self.items = []
@@ -255,10 +255,10 @@ class StatsDisplay(ServiceModeList):
         )
 
     def mode_started(self):
-        super(StatsDisplay, self).mode_started()
+        super().mode_started()
 
     def change_item(self):
-        super(StatsDisplay, self).change_item()
+        super().change_item()
         try:
             self.item.score
         except:
@@ -300,7 +300,7 @@ class Settings(ServiceModeList):
     """Service Mode."""
 
     def __init__(self, game, priority, font, name, itemlist):
-        super(Settings, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         # self.title_layer.set_text('Settings')
         self.name = name
         self.items = []
@@ -317,7 +317,7 @@ class SettingsEditor(ServiceModeList):
     """Service Mode."""
 
     def __init__(self, game, priority, font, name, itemlist):
-        super(SettingsEditor, self).__init__(game, priority, font)
+        super().__init__(game, priority, font)
         self.title_layer = TextLayer(1, 1, font, "left")
         self.item_layer = TextLayer(128 / 2, 12, font, "center")
         self.instruction_layer = TextLayer(1, 25, font, "left")
@@ -343,7 +343,7 @@ class SettingsEditor(ServiceModeList):
                     itemlist[item]["options"][1] - itemlist[item]["options"][0]
                 ) / itemlist[item]["increments"]
                 option_list = []
-                for i in range(0, num_options):
+                for i in range(num_options):
                     option_list.append(
                         itemlist[item]["options"][0]
                         + (i * itemlist[item]["increments"])
@@ -368,7 +368,7 @@ class SettingsEditor(ServiceModeList):
         self.option_index = self.item.options.index(self.item.value)
 
     def mode_started(self):
-        super(SettingsEditor, self).mode_started()
+        super().mode_started()
 
     def mode_stopped(self):
         self.game.sound.play("service_exit")

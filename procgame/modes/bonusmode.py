@@ -1,9 +1,8 @@
-import procgame.game
-import pygame
-from pygame.locals import *
 from pygame.font import *
+from pygame.locals import *
+
+from procgame.dmd import GroupedLayer, HDFontStyle, HDTextLayer
 from procgame.game import AdvancedMode
-from procgame.dmd import HDFontStyle, GroupedLayer, HDTextLayer
 
 
 class BonusMode(AdvancedMode):
@@ -22,11 +21,10 @@ class BonusMode(AdvancedMode):
 
         # a call to 'super' call's the parent object's __init__ method
         # in this case, it calls the procgame.game.Mode's init()
-        super(BonusMode, self).__init__(
+        super().__init__(
             game=game, priority=1, mode_type=AdvancedMode.Ball
         )
 
-        pass
 
     """
   the mode_started method is called whenever this mode is added

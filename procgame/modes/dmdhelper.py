@@ -1,15 +1,14 @@
 import logging
 
-from ..game import Mode
-from .. import dmd
-from ..dmd import TransitionLayer
-from ..dmd import Transition
-from ..dmd import HDTextLayer
-from ..dmd import HDFont
-from ..dmd import RandomizedLayer
-from ..dmd import AnimatedLayer
 from procgame.yaml_helper import value_for_key
-import yaml
+
+from .. import dmd
+from ..dmd import (
+    AnimatedLayer,
+    HDFont,
+    RandomizedLayer,
+)
+from ..game import Mode
 
 
 class DMDHelper(Mode):
@@ -18,7 +17,7 @@ class DMDHelper(Mode):
     msgfont = None
 
     def __init__(self, game):
-        super(DMDHelper, self).__init__(game=game, priority=12)
+        super().__init__(game=game, priority=12)
         self.logger = logging.getLogger("dmdhelper")
         self.timer_name = "message_display_ended"
         self.msgfont = self.game.fonts["default"]
@@ -45,8 +44,6 @@ class DMDHelper(Mode):
             self.game.animations["status_bg"].set_target_position(
                 int(self.game.dmd_width * 0.1), int(self.game.dmd_height * 0.25)
             )
-
-        pass
 
     def msg_over(self):
         self.layer = None
@@ -203,7 +200,6 @@ class DMDHelper(Mode):
             # offset values -- use the values as given unless negative!
             if tmp < 0:
                 tmp = relative_to + tmp
-            pass
         elif isinstance(tmp, float):
             # percentage values - set to appropriate percentage of 'relative_to' value
             tmp = relative_to * tmp
@@ -221,7 +217,7 @@ class DMDHelper(Mode):
         if for_text:
             fallback = 0.5
         else:
-            fallback = int(0)
+            fallback = 0
 
         x = self.__parse_relative_num(
             yaml_struct,
@@ -449,9 +445,7 @@ class DMDHelper(Mode):
                         layer.style = font_style
                         # print 'created the layer, now set text'
                         layer.set_text(
-                            "{0:<18}    {1:>18}".format(
-                                p.name, self.game.score_display.format_score(p.score)
-                            )
+                            f"{p.name:<18}    {self.game.score_display.format_score(p.score):>18}"
                         )
                         lyrTmp.layers += [layer]
 

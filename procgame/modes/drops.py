@@ -1,12 +1,11 @@
 from ..game import Mode
-import traceback
 
 
 class Scoring_Mode(Mode):
     """Scoring_mode base class.  Useful for modes that result in bonus points."""
 
     def __init__(self, game, priority):
-        super(Scoring_Mode, self).__init__(game, priority)
+        super().__init__(game, priority)
         self.bonus_base_elements = {}
         self.bonus_x = 1
 
@@ -15,7 +14,7 @@ class BasicDropTargetBank(Mode):
     """Basic Drop Target Bank mode."""
 
     def __init__(self, game, priority, prefix, letters):
-        super(BasicDropTargetBank, self).__init__(game, 8)
+        super().__init__(game, 8)
         self.letters = letters
         self.prefix = prefix
         self.auto_reset = True
@@ -108,7 +107,7 @@ class ProgressiveDropTargetBank(BasicDropTargetBank):
     """
 
     def __init__(self, game, priority, prefix, letters, advance_switch):
-        super(ProgressiveDropTargetBank, self).__init__(game, priority, prefix, letters)
+        super().__init__(game, priority, prefix, letters)
         self.add_switch_handler(
             name=advance_switch,
             event_type="closed",
@@ -163,7 +162,7 @@ class ProgressiveDropTargetBank(BasicDropTargetBank):
     def animated_reset(self, seconds):
         """Performs an animated reset and sets the current target back to the first target."""
         self.current_target = self.prefix + self.letters[0]
-        super(ProgressiveDropTargetBank, self).animated_reset(seconds)
+        super().animated_reset(seconds)
 
     def reset_drop_target_bank(self):
         """Resets the drop targets to the up position and configures the lamps to reflect the current target state."""
