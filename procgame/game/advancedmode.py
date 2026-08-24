@@ -39,7 +39,7 @@ class AdvancedMode(Mode):
 
         # discover evt handler functions and log them -- those methods have the format: evt_name(self):
         # handler_func_re = re.compile('evt_(?P<name>[a-zA-Z0-9_]+)?')
-        handler_func_re = re.compile("(?P<name>(evt_[a-zA-Z0-9_]+))+?")
+        handler_func_re = re.compile(r"(?P<name>(evt_[a-zA-Z0-9_]+))+?")
 
         for item in dir(self):
             m = handler_func_re.match(item)

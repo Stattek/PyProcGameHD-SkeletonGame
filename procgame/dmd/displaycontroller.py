@@ -26,7 +26,7 @@ class DisplayController:
     frame_handlers = []
     """If set, frames obtained by :meth:`.update` will be sent to the functions
     in this list with the frame as the only parameter.
-    
+
     This list is initialized to contain only ``self.game.proc.dmd_draw``."""
 
     def __init__(self, game, width=192, height=96, message_font=None):
